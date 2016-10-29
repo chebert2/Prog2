@@ -76,19 +76,29 @@ namespace Tree
                 return null;	// in Scheme we'd return #f
             else
             {
-                Node bind = alist.getCar();
-                
-                 // extra case  > look to further descendent cdr's since 
-                 //first car is null , which it shouldnot be.
+                Node parent_bind = alist.getCar();
+                Node bind;
+                if (parent_bind.isPair())
+                {
+                    bind = parent_bind.getCar();
 
-                 // if (bind.isNull() && !alist.getCdr().isNull())
-                 //    return find(id, alist.getCdr());
+                    // extra case  > look to further descendent cdr's since 
+                    //first car is null , which it shouldnot be.
 
-                if (id.getName().Equals(bind.getCar().getName()))
-                    // return a list containing the value as only element
-                    return bind.getCdr();
+                    // if (bind.isNull() && !alist.getCdr().isNull())
+                    //    return find(id, alist.getCdr());
+
+                    if (id.getName().Equals(bind.getCar().getName()))
+                        // return a list containing the value as only element
+                        return bind.getCdr();
+                    else
+                        return find(id, alist.getCdr());
+                }
                 else
-                    return find(id, alist.getCdr());
+                {
+                    Console.Error.WriteLine("Structure_ association list _ has wrong registered node somewhere.");
+                    return null;
+                }
             }
         }
 
@@ -114,8 +124,8 @@ namespace Tree
                     return env.lookup(id);
                 // success in finding id
                 else
-                    // get the value out of the list we got from find()
-                    return val.getCar();
+                    // return value--node we got from find call.s
+                    return val;
             }
             else
             // continue lookup current env == false
@@ -130,16 +140,38 @@ namespace Tree
 
         public void define(Node id, Node val)
         {
-            Cons node_being_added = new Cons(new Cons(id, val), this);
-
-            frame.set_root_car_node(node_being_added);
+            // we only want to define this in the frontmost frame at hand.
+            Node result_lookup = find(id, frame.get_root_of_frame());
+            if (result_lookup == null)
+            {
+                Cons node_being_added = new Cons(new Cons(id, val), this);
+                // put new definition in front of frame ( association list structure )
+                frame.set_root_car_node(node_being_added);
+            }
+            else
+                // if preexisting...
+                // update to newest value (,  in innermost scope). 
+            {
+                result_lookup = val;
+            }
 
         }
 
 
         public void assign(Node id, Node val)
         {
-            // TODO: implement this function
+            // search for id in id_value_pair in frame heirarchy
+            Node result_lookup = lookup(id);
+            // if nothing found, report error.
+            if (result_lookup == null)
+            {
+                Console.Error.WriteLine("Exception in assigning: variable with that name does not exist");
+            }
+            else
+                result_lookup = val;
+
+
+            
         }
     }
 }
