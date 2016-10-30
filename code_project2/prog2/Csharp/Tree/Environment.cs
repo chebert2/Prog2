@@ -137,9 +137,33 @@ namespace Tree
             }
         }
 
-
+        
         public void define(Node id, Node val)
         {
+
+            // it should be notee  that when parsing the written structure
+            //   print elements,... if there is a left parenthesis in front
+            //  in front of variable name, ... we are dealing with a function definition.
+            //  
+            //  and the variable name ought to be considered an identifier.
+
+
+
+
+            // function example  : where root cons node is given by: identifier 
+            // a   .  
+
+            // a equals  : (define (xoo x) (+ x x))
+            
+            // to get  expression for lambda out of any function defintion...
+
+            // node funcLambda = (cons 'lambda (cons (cdr (car (cdr a))) (cdr (cdr a))))
+
+            // xoo    can be looked up by querying:  (car (car (cdr a)))
+
+
+
+
             // we only want to define this in the frontmost frame at hand.
             Node result_lookup = find(id, frame.get_root_of_frame());
             if (result_lookup == null)
@@ -157,7 +181,7 @@ namespace Tree
 
         }
 
-
+        
         public void assign(Node id, Node val)
         {
             // search for id in id_value_pair in frame heirarchy
