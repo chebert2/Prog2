@@ -77,5 +77,9 @@ namespace Tree
         {
             return "";
         }
+        public Node apply (Node args)
+        {
+            return new StringLit("Error: BuiltIn.apply not yet implemented");
+    	}       
     }
 }
