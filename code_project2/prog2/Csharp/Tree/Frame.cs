@@ -15,7 +15,7 @@ namespace Tree
         // construct an association list that only holds the nil
         public Frame() {
 
-            root_node = Nil.getInstance();
+            root_node = null;
             has_elements = false;
             
         }
