@@ -35,7 +35,7 @@ namespace Tree
             if (!has_elements)
             {
                 
-                Console.Error.WriteLine("root has no elements yet.");
+                //Console.Error.WriteLine("root has no elements yet.");
                 return null;
             }
             else
