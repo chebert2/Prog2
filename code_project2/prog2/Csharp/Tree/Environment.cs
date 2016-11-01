@@ -72,7 +72,7 @@ namespace Tree
         // translation of the Scheme assq function.
         private static Node find(Node id, Node alist)
         {
-            if (! alist.isPair())
+            if (alist == null || ! alist.isPair())
                 return null;	// in Scheme we'd return #f
             else
             {
