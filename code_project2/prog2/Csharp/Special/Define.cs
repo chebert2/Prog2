@@ -52,7 +52,7 @@ namespace Tree
 				env1.define (cons_expression.getCdr ().getCar (), valueBeingAssigned);
 
 			}
-			// TODO:
+
 			// work out storing function in environment
 
 			else {
