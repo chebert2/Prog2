@@ -41,7 +41,8 @@ namespace Tree
         public virtual bool isSymbol() { return false; }  // Ident
         public virtual bool isNull()   { return false; }  // Nil
         public virtual bool isPair()   { return false; }  // Cons
-        public override  bool isProcedure() { return false; }
+        public override  bool isProcedure() { return false; } // Closure/Builtin
+        public virtual bool isFrame() { return false; }   // Frame
         // Since C# does not have covariant override, it is not possible
         // for the getCar and getCdr methods to implement the interface
         // methods from INode directly.
@@ -77,6 +78,10 @@ namespace Tree
         {
             return "";
         }
+        //public virtual Node eval(Environment env1){
+		//	return null;
+		//}
+        
         public Node apply (Node args)
         {
             return new StringLit("Error: BuiltIn.apply not yet implemented");
