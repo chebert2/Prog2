@@ -7,8 +7,6 @@ using Tree;
 
 public class Scheme4101
 {
-    public static bool scanner_debugging;
-
     public static int Main(string[] args)
     {
         // Create scanner that reads from standard input
@@ -24,7 +22,6 @@ public class Scheme4101
         // If command line option -d is provided, debug the scanner.
         if (args.Length == 1 && args[0].Equals("-d"))
         {
-            scanner_debugging = true;
             // Console.Write("Scheme 4101> ");
             Token tok = scanner.getNextToken();
             while (tok != null)
@@ -45,10 +42,6 @@ public class Scheme4101
                 tok = scanner.getNextToken();
             }
             return 0;
-        }
-        else
-        {
-            scanner_debugging = false;
         }
 
         // Create parser
