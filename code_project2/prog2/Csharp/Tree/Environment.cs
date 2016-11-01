@@ -76,29 +76,13 @@ namespace Tree
                 return null;	// in Scheme we'd return #f
             else
             {
-                Node parent_bind = alist.getCar();
-                Node bind;
-                if (parent_bind.isPair())
-                {
-                    bind = parent_bind.getCar();
-
-                    // extra case  > look to further descendent cdr's since 
-                    //first car is null , which it shouldnot be.
-
-                    // if (bind.isNull() && !alist.getCdr().isNull())
-                    //    return find(id, alist.getCdr());
-
-                    if (id.getName().Equals(bind.getCar().getName()))
-                        // return a list containing the value as only element
-                        return bind.getCdr();
-                    else
-                        return find(id, alist.getCdr());
-                }
+                
+                Node bind = alist.getCar();
+                if (id.getName().Equals(bind.getCar().getName()))
+                    // return a list containing the value as only element
+                    return bind.getCdr();
                 else
-                {
-                    Console.Error.WriteLine("Structure_ association list _ has wrong registered node somewhere.");
-                    return null;
-                }
+                    return find(id, alist.getCdr());
             }
         }
 
@@ -125,7 +109,7 @@ namespace Tree
                 // success in finding id
                 else
                     // return value--node we got from find call.s
-                    return val;
+                    return val.getCar();
             }
             else
             // continue lookup current env == false
@@ -141,7 +125,7 @@ namespace Tree
         public void define(Node id, Node val)
         {
 
-            // it should be notee  that when parsing the written structure
+            // it should be noted  that when parsing the written structure
             //   print elements,... if there is a left parenthesis in front
             //  in front of variable name, ... we are dealing with a function definition.
             //  
@@ -168,15 +152,15 @@ namespace Tree
             Node result_lookup = find(id, frame.get_root_of_frame());
             if (result_lookup == null)
             {
-                Cons node_being_added = new Cons(new Cons(id, val), this);
+                Cons node_being_added = new Cons(id, new Cons(val, Nil.getInstance()));
                 // put new definition in front of frame ( association list structure )
                 frame.set_root_car_node(node_being_added);
             }
             else
                 // if preexisting...
-                // update to newest value (,  in innermost scope). 
+                // update  node for value (,  in innermost scope). 
             {
-                result_lookup = val;
+                result_lookup = new Cons(val, Nil.getInstance() ) ;
             }
 
         }
@@ -192,7 +176,7 @@ namespace Tree
                 Console.Error.WriteLine("Exception in assigning: variable with that name does not exist");
             }
             else
-                result_lookup = val;
+                result_lookup = new Cons(val, Nil.getInstance() );
 
 
             
