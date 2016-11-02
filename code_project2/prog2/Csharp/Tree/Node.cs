@@ -78,9 +78,9 @@ namespace Tree
         {
             return "";
         }
-        //public virtual Node eval(Environment env1){
-		//	return null;
-		//}
+        public virtual Node eval(Environment env1){
+        	return new StringLit("Error: Node alone, without specific type, cannot be inspected.
+	}
         
         public Node apply (Node args)
         {
