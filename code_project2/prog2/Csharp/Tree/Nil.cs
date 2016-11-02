@@ -28,5 +28,10 @@ namespace Tree
         {
             return true;
         }
+        
+        public override Node eval(Environment env1){
+			return new StringLit("error: nil is not eligible for evaluation");
+		}
+        
     }
 }
