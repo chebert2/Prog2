@@ -20,7 +20,7 @@ namespace Tree
 			return null;
 		// return argument to quote as the same tree it was.
 		else
-			return node1.getCdr().eval (env1);
+			return node1.getCdr ().getCar ();
 		}
 
     }
