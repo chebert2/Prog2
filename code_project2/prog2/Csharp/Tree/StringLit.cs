@@ -23,6 +23,10 @@ namespace Tree
             return true;
         }
         
+	public String getString(){
+	     return stringVal;
+	}
+	
         public override Node eval(Environment env1){
 			return this;
 		}
