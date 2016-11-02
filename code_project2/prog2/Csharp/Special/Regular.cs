@@ -12,6 +12,18 @@ namespace Tree
         {
             Printer.printRegular(t, n, p);
         }
+
+		// dummy eval
+		public override Node eval(Node node1, Environment env1) {
+
+			// note: given that the first element is function...  
+			// a needed check is seeing as to  whether
+			// it is    a  builtin type   or a closure.
+
+
+			// giberish
+			return new Ident("one");
+		}
     }
 }
 
