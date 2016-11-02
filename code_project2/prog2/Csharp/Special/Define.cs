@@ -53,20 +53,43 @@ namespace Tree
 
 			}
 
+			
 			// work out storing function in environment
 
 			else {
 
 				// "function assignment";
 
-				// create a lambda of this definition of a function
-				// lambda node = (cons 'lambda (cons (cdr (car (cdr a))) (cdr (cdr a))))
-				Node lambda_function =     new Cons (  new Ident("lambda") ,    new Cons ( cons_expression.getCdr().getCar().getCdr(), 
-					cons_expression.getCdr().getCdr() ));
+				if (cons_expression.getCdr ().getCar ().getCdr ().isNull () || cons_expression.getCdr ().getCar ().getCdr ().isPair ()) {
+					// normal case without dot in parameters of express
 
-				Closure defined_closure = new Closure (lambda_function, env1);
 
-				env1.define (cons_expression.getCdr ().getCar().getCar() , defined_closure);
+					// create a lambda of this definition of a function
+					// lambda node = (cons 'lambda (cons (cdr (car (cdr a))) (cdr (cdr a))))
+					Node lambda_function = new Cons (new Ident ("lambda"), new Cons (cons_expression.getCdr ().getCar ().getCdr (), 
+						                       cons_expression.getCdr ().getCdr ()));
+
+					Closure defined_closure = new Closure (lambda_function, env1);
+
+					env1.define (cons_expression.getCdr ().getCar ().getCar (), defined_closure);
+				} else {
+					// particular spec case with a dot expression for parameters ... that ends the list without a nil 
+
+					// create a lambda of this definition of a function
+					// lambda node = (cons 'lambda (cons (cdr (car (cdr a))) (cdr (cdr a))))
+					Node lambda_function = new Cons (new Ident ("lambda"), 
+						                                     new Cons ( 
+							                                    
+							                                    new Cons(cons_expression.getCdr ().getCar ().getCdr (), Nil.getInstance() ) 
+
+							                                   , 
+
+						                                      cons_expression.getCdr ().getCdr ()));
+
+					Closure defined_closure = new Closure (lambda_function, env1);
+
+					env1.define (cons_expression.getCdr ().getCar ().getCar (), defined_closure);
+				}
 
 			}
 
