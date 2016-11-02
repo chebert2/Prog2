@@ -12,6 +12,17 @@ namespace Tree
         {
             Printer.printQuote(t, n, p);
         }
+
+
+	public override Node eval(Node node1, Environment env1) {
+	        // cannot evaluate what is absent.
+            	if (node1.getCdr ().isNull ())
+			return null;
+		// return argument to quote as the same tree it was.
+		else
+			return node1.getCdr().eval (env1);
+		}
+
     }
 }
 
