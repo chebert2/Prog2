@@ -47,7 +47,17 @@ namespace Tree
         // BuiltIn and Closure.
         public override Node apply (Node args)
         {
-            return new StringLit("Error: BuiltIn.apply not yet implemented");
+           	if (this.symbol.getName ().Equals ("read"))
+				return Scheme4101.parser.parseExp ();
+			else if (this.symbol.getName ().Equals ("b+")) {
+				IntLit int1 = (IntLit) args.getCar ();
+				IntLit int2 = (IntLit) args.getCdr ().getCar ();
+				return new IntLit (int1.getInt () + int2.getInt () );
+			}
+			else
+				return null;
+
+			return null;
     	}
     }    
 }
