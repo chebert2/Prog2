@@ -27,6 +27,12 @@ namespace Tree
         {
             return true;
         }
+        
+        // needs work...  might have to lookup if other value associated
+		public override Node eval(Environment env1) {
+			return this;
+		}
+        
     }
 }
 
