@@ -82,7 +82,7 @@ namespace Tree
         	return new StringLit("Error: Node alone, without specific type, cannot be inspected.
 	}
         
-        public Node apply (Node args)
+        public virtual Node apply (Node args)
         {
             return new StringLit("Error: BuiltIn.apply not yet implemented");
     	}       
