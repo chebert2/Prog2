@@ -23,7 +23,7 @@ namespace Tree
 
         public BuiltIn(Node s)		{ symbol = s; }
 
-        public Node getSymbol()		{ return symbol; }
+        public override Node getSymbol()		{ return symbol; }
 
         // TODO: The method isProcedure() should be defined in
         // class Node to return false.
