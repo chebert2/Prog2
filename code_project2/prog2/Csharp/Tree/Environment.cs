@@ -54,6 +54,21 @@ namespace Tree
             env = e;
         }
 
+        // checks if this is the most fundemental of environment
+	public override bool isGlobalEnvironment(){
+		if (this.env == null)
+			return true;
+		else
+			return false;
+	}
+
+        // a test for whether something is an environment object.
+	public override bool isEnvironment(){
+		return true;
+	}
+
+
+
         public override void print(int n) {
             // there got to be a more efficient way to print n spaces
             for (int i = 0; i < n; i++)
