@@ -1,4 +1,3 @@
-
 // Define -- Parse tree node strategy for printing the special form define
 
 using System;
@@ -44,16 +43,45 @@ namespace Tree
 
 			if (it_is_variable_Identifier__notFunction) {
 
+				if (cons_expression.getCdr ().getCdr ().getCar () == null)
+					return new StringLit ("Error: node with value in definition is null. cannot define.");
+
 				Node place_of_Node_with_Value = cons_expression.getCdr ().getCdr ().getCar ();
 
-				// access evalued form of value in assignment
-				Node valueBeingAssigned = place_of_Node_with_Value.eval (env1);
+				if (place_of_Node_with_Value.isPair ()) {
+					// assign val to id variable
+					// this in fact might assign our variable to point to a function term   [indirectly.]
+					env1.define (cons_expression.getCdr ().getCar (), place_of_Node_with_Value.eval (env1));
 
-				env1.define (cons_expression.getCdr ().getCar (), valueBeingAssigned);
+					// finish here.
+					return null;
+
+				} else {
+					if (place_of_Node_with_Value.eval (env1).isSymbol ()) {
+						Node lookedUp_val_term = env1.lookup (place_of_Node_with_Value.eval (env1));
+
+						// error ... value to be assigned is undefined.
+						if (lookedUp_val_term == null)
+							return new StringLit ("Error: value to be assigned is undefined expression.");
+						else
+							// assign val looked up , unto id variable
+							// this in fact might assign our variable to point to a function term   [indirectly.]
+							env1.define (cons_expression.getCdr ().getCar (), lookedUp_val_term);
+
+					}
+					else
+						// assign val onto id variable
+						// this in fact might assign our variable to point to a function term   [indirectly.]
+						env1.define (cons_expression.getCdr ().getCar (), place_of_Node_with_Value.eval (env1));
+
+					// finish here.
+					return null;
+
+				}
+
+
 
 			}
-
-			
 			// work out storing function in environment
 
 			else {
@@ -62,7 +90,6 @@ namespace Tree
 
 				if (cons_expression.getCdr ().getCar ().getCdr ().isNull () || cons_expression.getCdr ().getCar ().getCdr ().isPair ()) {
 					// normal case without dot in parameters of express
-
 
 					// create a lambda of this definition of a function
 					// lambda node = (cons 'lambda (cons (cdr (car (cdr a))) (cdr (cdr a))))
@@ -99,72 +126,3 @@ namespace Tree
 }
 
 
-
-
-
-
-
-
-/**
-oldest  draft  for reference
-// Define -- Parse tree node strategy for printing the special form define
-
-using System;
-
-namespace Tree
-{
-    public class Define : Special
-    {
-	public Define() { }
-
-        public override void print(Node t, int n, bool p)
-        {
-            Printer.printDefine(t, n, p);
-        }
-    }
-}  end oldest
-
-
-
-
-
-
-// less old
-
-// this is a draft and incomplete form of define .
-
-
-// Define -- Parse tree node strategy for printing the special form define
-
-using System;
-
-namespace Tree
-{
-    public class Define : Special
-    {
-	public Define() { }
-
-        public override void print(Node t, int n, bool p)
-        {
-            Printer.printDefine(t, n, p);
-        }
-
-          // needs work.  It is incomplete because it does not evaluate the args to (define x y  expression
-		public override Node eval(Node cons_expression, Environment env1) {
-
-
-			// the key of a frame is represented by the alist.getCar().getCar().getName();
-
-			// the val of a frame is represented by the alist.getCar().getCdr
-
-			env1.define (cons_expression.getCdr().getCar(),  cons_expression.getCdr().getCdr().getCar());
-
-			return null;
-		}
-    }
-}
-
-
-
-
-**/
