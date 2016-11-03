@@ -29,6 +29,7 @@ namespace Tree
         // class Node to return false.
         public /* override */ bool isProcedure()	{ return true; }
 
+        public override bool isBuiltIn(){ return true;}
         public override void print(int n)
         {
             // there got to be a more efficient way to print n spaces
