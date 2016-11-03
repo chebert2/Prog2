@@ -43,6 +43,11 @@ namespace Tree
         public virtual bool isPair()   { return false; }  // Cons
         public override  bool isProcedure() { return false; } // Closure/Builtin
         public virtual bool isFrame() { return false; }   // Frame
+	
+	public virtual bool isEnvironment() {return false;	}  // Environment
+
+	public virtual bool isGlobalEnvironment() {return false;} // Environment specific test
+	
         // Since C# does not have covariant override, it is not possible
         // for the getCar and getCdr methods to implement the interface
         // methods from INode directly.
