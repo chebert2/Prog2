@@ -28,10 +28,9 @@ namespace Tree
             return true;
         }
         
-        // needs work...  might have to lookup if other value associated
-		public override Node eval(Environment env1) {
-			return this;
-		}
+        public override Node eval(Environment env1) {
+	     return env1.lookup(this);
+        }
         
     }
 }
