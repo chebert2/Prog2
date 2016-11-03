@@ -25,7 +25,7 @@ namespace Tree
 			if (cons_expression.getCdr ().isNull () || cons_expression.getCdr ().getCar().isNull()
 				|| cons_expression.getCdr ().getCdr().isNull()  )
 			
-				return null;
+				return new StringLit("Error: lacking items to be defined in (define ...) .");
 
 
 			// the key of a frame is represented by the alist.getCar().getCar().getName();
@@ -57,8 +57,8 @@ namespace Tree
 					return null;
 
 				} else {
-					if (place_of_Node_with_Value.eval (env1).isSymbol ()) {
-						Node lookedUp_val_term = env1.lookup (place_of_Node_with_Value.eval (env1));
+					if (place_of_Node_with_Value.isSymbol ()) {
+						Node lookedUp_val_term = env1.lookup (place_of_Node_with_Value);
 
 						// error ... value to be assigned is undefined.
 						if (lookedUp_val_term == null)
@@ -72,7 +72,7 @@ namespace Tree
 					else
 						// assign val onto id variable
 						// this in fact might assign our variable to point to a function term   [indirectly.]
-						env1.define (cons_expression.getCdr ().getCar (), place_of_Node_with_Value.eval (env1));
+						env1.define (cons_expression.getCdr ().getCar (), place_of_Node_with_Value);
 
 					// finish here.
 					return null;
