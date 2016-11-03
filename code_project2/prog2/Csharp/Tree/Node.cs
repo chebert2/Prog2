@@ -42,6 +42,7 @@ namespace Tree
         public virtual bool isNull()   { return false; }  // Nil
         public virtual bool isPair()   { return false; }  // Cons
         public override  bool isProcedure() { return false; } // Closure/Builtin
+	public virtual bool isBuiltIn(){ return false;}    // BuiltIn
         public virtual bool isFrame() { return false; }   // Frame
 	
 	public virtual bool isEnvironment() {return false;	}  // Environment
