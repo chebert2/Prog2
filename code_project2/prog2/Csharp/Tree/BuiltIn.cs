@@ -23,13 +23,15 @@ namespace Tree
 
         public BuiltIn(Node s)		{ symbol = s; }
 
-        public Node getSymbol()		{ return symbol; }
+		public Node getSymbol()		{ return symbol; }
 
-        // TODO: The method isProcedure() should be defined in
+        // Done.. The method isProcedure() should be defined in
         // class Node to return false.
-        public /* override */ bool isProcedure()	{ return true; }
+        public  override  bool isProcedure()	{ return true; }
 
-        public override bool isBuiltIn(){ return true;}
+		public override bool isBuiltIn(){ return true;
+		}
+
         public override void print(int n)
         {
             // there got to be a more efficient way to print n spaces
@@ -43,23 +45,79 @@ namespace Tree
                 Console.WriteLine();
         }
 
+
+		// TODO : build eval.
+		public override Node eval (Node arguments_for_delivery, Environment env_given) {
+
+
+			if (this.symbol.getName ().Equals ("eval"))
+				return arguments_for_delivery.eval (env_given);
+			else if (this.symbol.getName ().Equals ("read"))
+				return this.apply ();
+			else if (this.symbol.getName ().Equals ("b+")) {
+				// extend for all argument vars
+				// and
+				//check if any args have null or nil.
+				if (arguments_for_delivery != null && arguments_for_delivery.getCar () != null
+				   && arguments_for_delivery.getCdr () != null && arguments_for_delivery.getCdr ().getCar () != null
+					&& arguments_for_delivery.getCdr ().getCdr ().isNull ()) {
+
+					if (!arguments_for_delivery.getCar ().isNumber () || !arguments_for_delivery.getCdr ().getCar ().isNumber ())
+						return new StringLit ("Error: arguments must be IntLit for binary addition.");
+					else
+					    return this.apply (arguments_for_delivery);
+						}
+				else
+					return new StringLit ("Error: more than two arguments for binary addition is not permissable.");
+
+			} else if (this.symbol.getName ().Equals ("null?")) {
+				// extend for all argument vars
+
+				// check if number of args is correct
+				bool argument_number_good = false;
+				if (arguments_for_delivery != null && arguments_for_delivery.getCar () != null
+					&& arguments_for_delivery.getCdr() != null  && arguments_for_delivery.getCdr ().isNull () )
+					argument_number_good = true;
+
+				if (argument_number_good)
+					return this.apply (arguments_for_delivery);
+				else
+					return new StringLit("Error: wrong number of arguments for test. only need 1 pair node with nil tail for argument.");
+			}
+			else
+				return new StringLit("Error: builtin is not identifiable.");
+		}
+
+
         // TODO: The method apply() should be defined in class Node
         // to report an error.  It should be overridden only in classes
         // BuiltIn and Closure.
-        public override Node apply (Node args)
+		public override Node apply (Node args)
         {
-           	if (this.symbol.getName ().Equals ("read"))
+			if (this.symbol.getName ().Equals ("read"))
 				return Scheme4101.parser.parseExp ();
+
+
 			else if (this.symbol.getName ().Equals ("b+")) {
 				IntLit int1 = (IntLit) args.getCar ();
 				IntLit int2 = (IntLit) args.getCdr ().getCar ();
 				return new IntLit (int1.getInt () + int2.getInt () );
 			}
+			else if(this.symbol.getName() Equals ("null?")) {
+				if(args.getCar().isNull())
+					return new BoolLit(true);
+				else
+					return new BoolLit(false);
+			}
 			else
 				return null;
 
-			return null;
+
     	}
+
+
+
+
     }    
 }
 
