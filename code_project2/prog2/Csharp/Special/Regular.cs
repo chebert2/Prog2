@@ -57,7 +57,7 @@ namespace Tree
 			if (node1.getCdr () == null)
 				return null;
 
-			// special builtIn eval case.
+			// special builtIn   eval  case.
 			if (firstElem_car.isBuiltIn ()) {
 				BuiltIn givenId = (BuiltIn)firstElem_car;
 
@@ -65,6 +65,8 @@ namespace Tree
 
 				if (givenId.getSymbol ().getName ().Equals ("eval")) {
 
+					// build new environment for this to be computed for.
+					Environment envExtend = new Environment (env1);
 
 					// check for null values now  so null pointer doesnt get encountered
 					if (node1.getCdr ().getCar () == null || node1.getCdr ().getCdr () == null ||
@@ -85,7 +87,7 @@ namespace Tree
 							return new StringLit ("Error: environment symbol was not found.");
 					} // check if expression needs to be evaluated
 					else if (env_symbol_to_lookup.isPair ())
-						environment_found = env_symbol_to_lookup.eval (env1);
+						environment_found = env_symbol_to_lookup.eval (envExtend);
  
 					if (environment_found != null && environment_found.isEnvironment ())
 						environment_taken = true;
@@ -93,7 +95,7 @@ namespace Tree
 						return new StringLit ("Error: evaluation op_ did not find a fitting environment.");
 
 					// working on expression now
-					Cons args_to_eval = null;
+					Node args_to_eval = null;
 
 					Node localTerms_data = node1.getCdr ().getCar ();
 
@@ -104,33 +106,49 @@ namespace Tree
 
 						Cons cons_data = (Cons)localTerms_data;
 
-						if (cons_data.getForm_ofCons () == Quote)
-							// copy evaluated quote expression and then the environment
-							args_to_eval = new Cons (cons_data.eval (env1), environment_found);
-						else if (cons_data.getForm_ofCons () == Lambda)
-							// copy evaluated lambda expression and then the environment
-							args_to_eval = new Cons (cons_data.eval (env1), environment_found);
-						else
+						if (cons_data.getForm_ofCons () == Quote) {
+
+							Node args_of_Quote = cons_data.eval (envExtend);
+
+							if (args_of_Quote != null)
+							// copy evaluated quote expression 
+								args_to_eval = args_of_Quote;
+
+						} else if (cons_data.getForm_ofCons () == Lambda) {
+
+							Node args_of_Lambda = cons_data.eval (envExtend);
+
+							if (args_of_Lambda != null)
+							// copy evaluated lambda expression
+								args_to_eval = args_of_Lambda;
+						} else {
 							// this needs fine tuning for more special cases..\\
 
 							//("may have more cases... ")
 							//??
-							args_to_eval = new Cons (localTerms_data, environment_found);
+							args_to_eval = localTerms_data;
+						}
 					} else if (localTerms_data.isSymbol () && environment_taken) {
 						Node node_symbol_expression = env1.lookup (localTerms_data);
 						if (node_symbol_expression != null)
 							// copy evaluated symbol and then the environment
-							args_to_eval = new Cons (node_symbol_expression, environment_found);
+							args_to_eval = node_symbol_expression;
 						else
 							return new StringLit ("Error: first expression argument symbol not found.");
 					}
-
-
-
-					return givenId.eval (args_to_eval);
+					// return the built in eval of args and environment given
+					if (args_to_eval != null) {
+						if (args_to_eval.isPair)
+							return givenId.eval (args_to_eval, envExtend);
+						else
+							return givenId.eval (new Cons (args_to_eval, Nil.getInstance ()), envExtend);
+					}
+					else
+						return new StringLit ("Error: expression arg was null.");
 					    
 				}
 			}
+
 
 
 			// other cases  builtin or closure...
@@ -173,7 +191,7 @@ namespace Tree
 				    	// Cons evaluated_argsList__in_progress;
 
 					// check if eval is not null
-					Node evalItem1 = args_given.getCar ().eval (envExtend1)
+					Node evalItem1 = args_given.getCar ().eval (envExtend1);
 					if( evalItem1 != null)
 						evaluated_argsList__in_progress = new Cons (evalItem1, added_fringe_con);
 					else
@@ -188,9 +206,9 @@ namespace Tree
 				  // no more fringes left.
 				else  {
 
-					Cons evaluated_argsList__in_progress;
+					evaluated_argsList__in_progress;
 					// check if eval is not null
-					Node evalItem1 = args_given.getCar ().eval (envExtend1)
+					Node evalItem1 = args_given.getCar ().eval (envExtend1);
 						if( evalItem1 != null)
 							evaluated_argsList__in_progress = new Cons (evalItem1, Nil.getInstance() );
 						else
@@ -203,6 +221,9 @@ namespace Tree
 				// get rest of fringes
 				while ( hasMoreDescendents )
 			    {
+					if(args_given.getCdr() == null)
+						return new StringLit("Error: one of the later argument items  in regular function was null. ");
+
 					// precaution for null pointer   so it is legal to use the cdr after this test
 					if (args_given.getCdr().isPair ()) {
 
@@ -240,7 +261,7 @@ namespace Tree
 						args_given = args_given.getCdr ();
 
 						// check if additional eval items are not null
-						Node evalItem_more = args_given.getCar().eval(envExtend2)
+						Node evalItem_more = args_given.getCar().eval(envExtend2);
 						
 						if( evalItem_more != null)
 							fringe_cons.setCdr() = new Cons (evalItem_more, Nil.getInstance() );
@@ -251,20 +272,18 @@ namespace Tree
 
 						hasMoreDescendents = false;
 
-						return firstElem_car.eval(evaluated_argsList__in_progress, env1);
+
 
 					}
-
-					return firstElem_car.eval(evaluated_argsList__in_progress, env1);
-
+						
 
 			    }
 
-				return firstElem_car.eval(evaluated_argsList__in_progress, env1);
+				return firstElem_car.eval(evaluated_argsList__in_progress, envExtend1);
 
 			}
 
-			return firstElem_car.eval(new BoolLit(false), env1) ;
+			return firstElem_car.eval(Nil.getInstance(), envExtend1) ;
 
 
 
