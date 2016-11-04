@@ -53,8 +53,13 @@ namespace Tree
 			if (this.symbol.getName ().Equals ("eval"))
 				return arguments_for_delivery.eval (env_given);
 			else if (this.symbol.getName ().Equals ("read"))
-				return this.apply ();
+				return this.apply (null);
 			else if (this.symbol.getName ().Equals ("b+")) {
+
+				// if there are no arguments, report error
+				if (arguments_for_delivery != null || arguments_for_delivery.isNull ())
+					return new StringLit ("Error: no arguments given for binary addition operation.");
+
 				// extend for all argument vars
 				// and
 				//check if any args have null or nil.
@@ -71,6 +76,12 @@ namespace Tree
 					return new StringLit ("Error: more than two arguments for binary addition is not permissable.");
 
 			} else if (this.symbol.getName ().Equals ("null?")) {
+
+				// if there are no arguments, report error
+				if (arguments_for_delivery != null || arguments_for_delivery.isNull ())
+					return new StringLit ("Error: no arguments given for binary addition operation.");
+
+
 				// extend for all argument vars
 
 				// check if number of args is correct
@@ -95,7 +106,7 @@ namespace Tree
 		public override Node apply (Node args)
         {
 			if (this.symbol.getName ().Equals ("read"))
-				return Scheme4101.parser.parseExp ();
+				return (Node) Scheme4101.parser.parseExp ();
 
 
 			else if (this.symbol.getName ().Equals ("b+")) {
@@ -103,7 +114,7 @@ namespace Tree
 				IntLit int2 = (IntLit) args.getCdr ().getCar ();
 				return new IntLit (int1.getInt () + int2.getInt () );
 			}
-			else if(this.symbol.getName() Equals ("null?")) {
+			else if(this.symbol.getName().Equals ("null?")) {
 				if(args.getCar().isNull())
 					return new BoolLit(true);
 				else
