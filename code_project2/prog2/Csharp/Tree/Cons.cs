@@ -84,7 +84,11 @@ namespace Tree
         {
             cdr = d;
         }
-
+        
+	public Special getForm_ofCons() 
+	{
+	     return form;
+	}
         public override bool isPair()
         {
             return true;
