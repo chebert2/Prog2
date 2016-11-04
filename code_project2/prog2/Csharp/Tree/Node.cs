@@ -41,14 +41,13 @@ namespace Tree
         public virtual bool isSymbol() { return false; }  // Ident
         public virtual bool isNull()   { return false; }  // Nil
         public virtual bool isPair()   { return false; }  // Cons
-        public override  bool isProcedure() { return false; } // Closure/Builtin
-	public virtual bool isBuiltIn(){ return false;}    // BuiltIn
+		public virtual bool isProcedure() { return false;} // Procedure
+		public virtual bool isBuiltIn(){ return false;}    // BuiltIn
         public virtual bool isFrame() { return false; }   // Frame
-	
-	public virtual bool isEnvironment() {return false;	}  // Environment
+		public virtual bool isEnvironment() {return false;	}  // Environment
 
-	public virtual bool isGlobalEnvironment() {return false;} // Environment specific test
-	
+		public virtual bool isGlobalEnvironment() {return false;} // Environment specific test
+
         // Since C# does not have covariant override, it is not possible
         // for the getCar and getCdr methods to implement the interface
         // methods from INode directly.
@@ -84,13 +83,17 @@ namespace Tree
         {
             return "";
         }
-        public virtual Node eval(Environment env1){
-        	return new StringLit("Error: Node alone, without specific type, cannot be inspected.
-	}
-        
-        public virtual Node apply (Node args)
-        {
-            return new StringLit("Error: BuiltIn.apply not yet implemented");
-    	}       
+
+		public virtual Node eval(Environment env1){
+			return null;
+		}
+
+		public virtual Node eval(Node node1, Environment env1){
+			return null;
+		}
+
+		public virtual Node apply(Node args) {
+			return null;
+		}
     }
 }
