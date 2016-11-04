@@ -1,8 +1,7 @@
 // Regular -- Parse tree node strategy for printing regular lists
 
 using System;
-using Environment;
-using BuiltIn;
+using Tree;
 
 namespace Tree
 {
@@ -34,7 +33,7 @@ namespace Tree
 			// the first element is supposed to be a function to be evaluated.  
 
 			// this variable will hold the final function head term we get.
-			Node firstElem_car;
+			Node firstElem_car = node1.getCar();
 
 			// step one   :  if Car is a pair, evaluate it and store resulting ident, ... which ought to be
 			// another function once evaluated...
@@ -43,7 +42,7 @@ namespace Tree
 				Environment envExtend = new Environment (env1);
 				firstElem_car = node1.getCar ().eval (envExtend);
 				//report error if not   a builtin/  or /closure
-				if (firstElem_car == null ||  !firstElem_car.isProcedure ())
+				if (firstElem_car == null || !firstElem_car.isProcedure ())
 					return new StringLit ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
 
 			} else if (node1.getCar ().isSymbol ()) {
@@ -62,7 +61,8 @@ namespace Tree
 				BuiltIn givenId = (BuiltIn)firstElem_car;
 
 
-
+				// check if built in is eval
+				// note carefully: if symbol == null, null pointer will happen.
 				if (givenId.getSymbol ().getName ().Equals ("eval")) {
 
 					// build new environment for this to be computed for.
@@ -104,19 +104,20 @@ namespace Tree
 					// for eval to implement as code
 					if (localTerms_data.isPair () && environment_taken) {
 
-						Cons cons_data = (Cons)localTerms_data;
 
-						if (cons_data.getForm_ofCons () == Quote) {
+						if (localTerms_data.getCar() != null && localTerms_data.getCar().isSymbol()
+							&& localTerms_data.getCar().getName().Equals("quote")) {
 
-							Node args_of_Quote = cons_data.eval (envExtend);
+							Node args_of_Quote = localTerms_data.eval (envExtend);
 
 							if (args_of_Quote != null)
 							// copy evaluated quote expression 
 								args_to_eval = args_of_Quote;
 
-						} else if (cons_data.getForm_ofCons () == Lambda) {
+						} else if (localTerms_data.getCar() != null && localTerms_data.getCar().isSymbol()
+							&& localTerms_data.getCar().getName().Equals("lambda")) {
 
-							Node args_of_Lambda = cons_data.eval (envExtend);
+							Node args_of_Lambda = localTerms_data.eval (envExtend);
 
 							if (args_of_Lambda != null)
 							// copy evaluated lambda expression
@@ -138,10 +139,11 @@ namespace Tree
 					}
 					// return the built in eval of args and environment given
 					if (args_to_eval != null) {
-						if (args_to_eval.isPair)
-							return givenId.eval (args_to_eval, environment_found);
+						Environment environment_copy_found = (Environment)environment_found;
+						if (args_to_eval.isPair())
+							return givenId.eval (args_to_eval, environment_copy_found);
 						else
-							return givenId.eval (new Cons (args_to_eval, Nil.getInstance ()), environment_found);
+							return givenId.eval (new Cons (args_to_eval, Nil.getInstance ()), environment_copy_found);
 					}
 					else
 						return new StringLit ("Error: expression arg was null.");
@@ -169,6 +171,11 @@ namespace Tree
 
 			if (hasArguments){
 
+
+				if (args_given.getCdr () == null || args_given.getCar () == null)
+					return new StringLit ("Error: one of passed arguments in function expression is null.");
+
+
 				// need to evaluate args (each car separately)... and then return what is resulting list of elements...
 
 				// build new environment on hand _ for each car to be computed at times.
@@ -183,7 +190,7 @@ namespace Tree
 				Cons fringe_cons = null;
 
 
-				bool hasMoreDescendents =   ! args_given.getCdr ().isNull();
+				bool hasMoreDescendents =  ! args_given.getCdr ().isNull()   ;
 
 
 				if (hasMoreDescendents) {
@@ -209,7 +216,7 @@ namespace Tree
 				  // no more fringes left.
 				else  {
 
-					evaluated_argsList__in_progress;
+
 					// check if eval is not null
 					Node evalItem1 = args_given.getCar ().eval (envExtend1);
 						if( evalItem1 != null)
@@ -243,16 +250,16 @@ namespace Tree
 						// check if additional eval items are not null
 						Node evalItem_more = args_given.getCar().eval(envExtend2);
 						if( evalItem_more != null)
-							fringe_cons.setCdr() = new Cons (evalItem_more, added_fringe_con );
+							fringe_cons.setCdr(new Cons (evalItem_more, added_fringe_con ));
 						else
 							return new StringLit("Error: one of the later argument items  in regular function was null. ");
 
 
-						fringe_cons = fringe_cons.getCdr();
+						fringe_cons = (Cons) fringe_cons.getCdr();
 
 					}
 					else if(args_given.getCdr().isNull()) {
-						fringe_cons.setCdr() = Nil.getInstance();
+						fringe_cons.setCdr(Nil.getInstance());
 						hasMoreDescendents = false;
 					}
 					else {
@@ -267,7 +274,7 @@ namespace Tree
 						Node evalItem_more = args_given.getCar().eval(envExtend2);
 						
 						if( evalItem_more != null)
-							fringe_cons.setCdr() = new Cons (evalItem_more, Nil.getInstance() );
+							fringe_cons.setCdr(new Cons (evalItem_more, Nil.getInstance() ));
 
 						else
 							return new StringLit("Error: one of the later argument items  in regular function was null. ");
