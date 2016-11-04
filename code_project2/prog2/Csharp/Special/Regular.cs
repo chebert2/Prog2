@@ -43,13 +43,13 @@ namespace Tree
 				Environment envExtend = new Environment (env1);
 				firstElem_car = node1.getCar ().eval (envExtend);
 				//report error if not   a builtin/  or /closure
-				if (!firstElem_car.isProcedure ())
+				if (firstElem_car == null ||  !firstElem_car.isProcedure ())
 					return new StringLit ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
 
 			} else if (node1.getCar ().isSymbol ()) {
 				firstElem_car = env1.lookup (node1.getCar ());
 				//report error if not   a builtin/  or /closure
-				if ( !firstElem_car.isProcedure() )
+				if ( firstElem_car == null || !firstElem_car.isProcedure() )
 					return new StringLit ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
 
 			}
