@@ -139,14 +139,17 @@ namespace Tree
 					// return the built in eval of args and environment given
 					if (args_to_eval != null) {
 						if (args_to_eval.isPair)
-							return givenId.eval (args_to_eval, envExtend);
+							return givenId.eval (args_to_eval, environment_found);
 						else
-							return givenId.eval (new Cons (args_to_eval, Nil.getInstance ()), envExtend);
+							return givenId.eval (new Cons (args_to_eval, Nil.getInstance ()), environment_found);
 					}
 					else
 						return new StringLit ("Error: expression arg was null.");
 					    
 				}
+
+
+
 			}
 
 
@@ -279,11 +282,11 @@ namespace Tree
 
 			    }
 
-				return firstElem_car.eval(evaluated_argsList__in_progress, envExtend1);
+				return firstElem_car.eval(evaluated_argsList__in_progress, env1);
 
 			}
 
-			return firstElem_car.eval(Nil.getInstance(), envExtend1) ;
+			return firstElem_car.eval(Nil.getInstance(), env1) ;
 
 
 
