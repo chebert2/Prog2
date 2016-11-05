@@ -57,7 +57,7 @@ namespace Tree
 			else if (this.symbol.getName ().Equals ("b+")) {
 
 				// if there are no arguments, report error
-				if (arguments_for_delivery != null || arguments_for_delivery.isNull ())
+				if (arguments_for_delivery == null || arguments_for_delivery.isNull ())
 					return new StringLit ("Error: no arguments given for binary addition operation.");
 
 				// extend for all argument vars
@@ -78,8 +78,8 @@ namespace Tree
 			} else if (this.symbol.getName ().Equals ("null?")) {
 
 				// if there are no arguments, report error
-				if (arguments_for_delivery != null || arguments_for_delivery.isNull ())
-					return new StringLit ("Error: no arguments given for binary addition operation.");
+				if (arguments_for_delivery == null || arguments_for_delivery.isNull ())
+					return new StringLit ("Error: no arguments given for null evaluation.");
 
 
 				// extend for all argument vars
