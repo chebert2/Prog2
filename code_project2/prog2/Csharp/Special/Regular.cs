@@ -141,9 +141,9 @@ namespace Tree
 					if (args_to_eval != null) {
 						Environment environment_copy_found = (Environment)environment_found;
 						if (args_to_eval.isPair())
-							return givenId.eval (args_to_eval, environment_copy_found);
+							return args_to_eval.eval(environment_copy_found);
 						else
-							return givenId.eval (new Cons (args_to_eval, Nil.getInstance ()), environment_copy_found);
+							return args_to_eval.eval(environment_copy_found);
 					}
 					else
 						return new StringLit ("Error: expression arg was null.");
@@ -229,7 +229,7 @@ namespace Tree
 
 
 				// get rest of fringes
-				while ( hasMoreDescendents )
+   				while ( hasMoreDescendents )
 			    {
 					if(args_given.getCdr() == null)
 						return new StringLit("Error: one of the later argument items  in regular function was null. ");
@@ -289,11 +289,11 @@ namespace Tree
 
 			    }
 
-				return firstElem_car.eval(evaluated_argsList__in_progress, env1);
+				return firstElem_car.apply(evaluated_argsList__in_progress);
 
 			}
 
-			return firstElem_car.eval(Nil.getInstance(), env1) ;
+			return firstElem_car.apply(Nil.getInstance()) ;
 
 
 
