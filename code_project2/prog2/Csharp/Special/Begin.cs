@@ -40,7 +40,13 @@ namespace Tree
 	      return car;
 */
           
+	  
+	  
+	  
 		return null;
+		
+	 // return evals every item elem.  On the last item, the value is returned.
+         // what needs to be returned  is the last non-nil tail items eval.
 
 	}
     }
