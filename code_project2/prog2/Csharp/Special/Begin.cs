@@ -20,7 +20,7 @@ namespace Tree
 
             {
 
-                Console.Error.WriteLine("Error: Begin is null (cdr)");
+                Console.WriteLine("Error: Null)");
 
                 return Nil.getInstance();
 
@@ -34,7 +34,7 @@ namespace Tree
 
             {
 
-                Console.Error.WriteLine("Error: Begin is null (car)");
+                Console.WriteLine("Error: Null)");
 
             }
 	      return car;
