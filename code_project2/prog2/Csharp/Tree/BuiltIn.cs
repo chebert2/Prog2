@@ -563,6 +563,226 @@ namespace Tree
 
 			}
 
+			// working on predicate built in :    eq?
+			else if (this.symbol.getName().Equals("eq?")) {
+
+
+				// if there are no arguments, report error
+				if (args == null || args.isNull ())
+					return new StringLit ("Error: no arguments given for eq?   test operation.");
+
+				// extend for all argument vars
+				// and
+				//check if any args have null or nil.
+				if (args != null && args.getCar () != null
+					&& args.getCdr () != null && args.getCdr ().getCar () != null
+					&& args.getCdr ().getCdr ().isNull ()) {
+
+					//if (!args.getCar () || !args.getCdr ().getCar () )
+
+
+					// check nil/null? first
+
+					// first car is nil but  second item is not nil... 
+					// or the other way around   (vice versa)
+					if ((args.getCar ().isNull () && !args.getCdr ().getCar ().isNull ()) ||
+					    (!args.getCar ().isNull () && args.getCdr ().getCar ().isNull ())) {
+						return BoolLit.getInstance (false);
+					}
+					// success: both nil
+					else if (args.getCar ().isNull () && args.getCdr ().getCar ().isNull ()) {
+						return BoolLit.getInstance (true);
+					}
+
+					// first car is type symbol but  second item is not symbol... 
+					// or the other way around   (vice versa)
+					else if ((args.getCar ().isSymbol () && !args.getCdr ().getCar ().isSymbol ()) ||
+					         (!args.getCar ().isSymbol () && args.getCdr ().getCar ().isSymbol ())) {
+						return BoolLit.getInstance (false);
+					}
+					// check if both symbol   now...
+					else if (args.getCar ().isSymbol () && args.getCdr ().getCar ().isSymbol ()) {
+						// check if the symbol's are identical
+
+						if (args.getCar ().getName ().Equals (args.getCdr ().getCar ().getName ()))
+							// success:    both same symbol!
+							return BoolLit.getInstance (true);
+						else
+							return BoolLit.getInstance (false);
+					}
+
+					// first car is type number but  second item is not number... 
+					// or the other way around   (vice versa)
+					else if ((args.getCar ().isNumber () && !args.getCdr ().getCar ().isNumber ()) ||
+					         (!args.getCar ().isNumber () && args.getCdr ().getCar ().isNumber ())) {
+						return BoolLit.getInstance (false);
+					}
+					// check if both number   now...
+					else if (args.getCar ().isNumber () && args.getCdr ().getCar ().isNumber ()) {
+
+						// cast to new IntLits
+						IntLit intLit_1 = (IntLit) args.getCar ();
+						IntLit intLit_2 = (IntLit) args.getCdr ().getCar ();
+
+
+						// check if the int values's are equal
+
+						if (intLit_1.Equals(intLit_2) )
+							// success:    both same integer!
+							return BoolLit.getInstance (true);
+						else
+							return BoolLit.getInstance (false);
+					}
+
+
+					// first car is type boolean but  second item is not boolean... 
+					// or the other way around   (vice versa)
+					else if ((args.getCar ().isBool () && !args.getCdr ().getCar ().isBool ()) ||
+					         (!args.getCar ().isBool () && args.getCdr ().getCar ().isBool ())) {
+						return BoolLit.getInstance (false);
+					}
+					// check if both boolean   now...
+					else if (args.getCar ().isBool () && args.getCdr ().getCar ().isBool ()) {
+						// cast nodes as new booleanNodes
+
+						BoolLit boolVal1 = (BoolLit) args.getCar ();
+						BoolLit boolVal2 = (BoolLit) args.getCdr ().getCar ();
+
+						// check if the bool's equal
+
+						if (boolVal1.Equals(boolVal2))
+							// success:    both same bool!
+							return BoolLit.getInstance (true);
+						else
+							return BoolLit.getInstance (false);
+					}
+
+
+
+					// first car is type builtIn but  second item is not builtIn... 
+					// or the other way around   (vice versa)
+					else if ((args.getCar ().isBuiltIn () && !args.getCdr ().getCar ().isBuiltIn ()) ||
+					         (!args.getCar ().isBuiltIn () && args.getCdr ().getCar ().isBuiltIn ())) {
+						return BoolLit.getInstance (false);
+					}
+					// check if both builtIn   now...
+					else if (args.getCar ().isBuiltIn () && args.getCdr ().getCar ().isBuiltIn ()) {
+						// cast nodes as new builtIn
+						BuiltIn builtIn_val_1 = (BuiltIn) args.getCar ();
+						BuiltIn builtIn_val_2 = (BuiltIn) args.getCdr ().getCar ();
+
+						// check if the builtIn's are identical
+
+						if (builtIn_val_1.getSymbol ().Equals (builtIn_val_2.getSymbol ()))
+							// success:    both same builtIn!
+							return BoolLit.getInstance (true);
+						else
+							return BoolLit.getInstance (false);
+					}
+
+					// by process of elimination
+					//now
+					// a object that ends up tested here would be surely a closure... 
+
+					// first car is type closure but  second item is not closure... 
+					// or the other way around   (vice versa)
+					else if ((args.getCar ().isProcedure () && !args.getCdr ().getCar ().isProcedure ()) ||
+					         (!args.getCar ().isProcedure () && args.getCdr ().getCar ().isProcedure ())) {
+						return BoolLit.getInstance (false);
+					}
+					// check if both closure   now...
+					else if (args.getCar ().isProcedure () && args.getCdr ().getCar ().isProcedure ()) {
+						// cast nodes as new builtIn
+						Closure closure_val_1 = (Closure) args.getCar ();
+						Closure closure_val_2 = (Closure) args.getCdr ().getCar ();
+
+						// check if the closure's are identical
+
+						if (closure_val_1.Equals (closure_val_2))
+							// success:    both same closure!
+							return BoolLit.getInstance (true);
+						else
+							return BoolLit.getInstance (false);
+					}
+
+
+
+					// first car is type environment but  second item is not environment... 
+					// or the other way around   (vice versa)
+					else if ((args.getCar ().isEnvironment () && !args.getCdr ().getCar ().isEnvironment ()) ||
+					         (!args.getCar ().isEnvironment () && args.getCdr ().getCar ().isEnvironment ())) {
+						return BoolLit.getInstance (false);
+					}
+					// check if both environment   now...
+					else if (args.getCar ().isEnvironment () && args.getCdr ().getCar ().isEnvironment ()) {
+						// cast nodes as new Environment
+						Environment environ_1 = (Environment) args.getCar ();
+						Environment environ_2 = (Environment) args.getCdr ().getCar ();
+
+						// check if the environment's are identical
+
+						if (environ_1.Equals (environ_2))
+							// success:    both same environment!
+							return BoolLit.getInstance (true);
+						else
+							return BoolLit.getInstance (false);
+					}
+
+					// first car is type String but  second item is not String... 
+					// or the other way around   (vice versa)
+					else if ((args.getCar ().isString () && !args.getCdr ().getCar ().isString ()) ||
+					         (!args.getCar ().isString () && args.getCdr ().getCar ().isString ())) {
+						return BoolLit.getInstance (false);
+					}
+					// check if both String   now...
+					else if (args.getCar ().isString () && args.getCdr ().getCar ().isString ()) {
+						// cast nodes as new StringLits
+						StringLit String_1 = (StringLit) args.getCar ();
+						StringLit String_2 = (StringLit) args.getCdr ().getCar ();
+
+						// check if the StringLit's are identical
+
+						if (String_1.Equals (String_2))
+							// success:    both same StringLit!
+							return BoolLit.getInstance (true);
+						else
+							return BoolLit.getInstance (false);
+					}
+
+
+					// first car is type Pair but  second item is not Pair... 
+					// or the other way around   (vice versa)
+					else if ((args.getCar ().isPair () && !args.getCdr ().getCar ().isPair ()) ||
+					         (!args.getCar ().isPair () && args.getCdr ().getCar ().isPair ())) {
+						return BoolLit.getInstance (false);
+					}
+					// check if both are type Pair   now...
+					else if (args.getCar ().isPair () && args.getCdr ().getCar ().isPair ()) {
+						// cast nodes as new cons Pair
+						Cons cons_1 = (Cons) args.getCar ();
+						Cons cons_2 = (Cons) args.getCdr ().getCar ();
+
+						// check if the Cons's are identical
+
+						if (cons_1.Equals (cons_2))
+							// success:    both same pair reference!
+							return BoolLit.getInstance (true);
+						else
+							return BoolLit.getInstance (false);
+
+						// illegal function for argument
+					} else
+						return new StringLit ("Error: Argument types for eq? cannot be recognized in context.");
+
+
+				}
+				else
+					return new StringLit ("Error: null parameter _ or _ more than two arguments for eq?  test is not permissable.");
+
+			}
+
+
+
 			else
 				return new StringLit("Error: builtin is not identifiable.");
 
