@@ -83,7 +83,10 @@ namespace Tree
         {
             return "";
         }
-
+	
+        public virtual int getInt() {
+	      return -1;
+	}
 		public virtual Node eval(Environment env1){
 			return null;
 		}
