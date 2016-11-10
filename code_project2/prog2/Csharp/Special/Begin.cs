@@ -72,16 +72,18 @@ namespace Tree
 	    // start loop that flips through elements until we get at the last destination expression.
 	    else{
 	        // initialize the item that may be returned.
-	        Node returnItem = null;
+	        Node returnItem;
 		
-		
-		
-	        bool hasAdditionalExp = false;
-		
-		
-		// build new environment on hand _ for each car to be computed at times.
-		 Environment envExtend1 = new Environment (env);
+		// set a conditional and (on hold prospect)  return element.
+		 if(cdr.getCar() == null){
+		         Console.WriteLine("Error: one of expressions in begin's arguments null .");
 
+                         return Nil.getInstance();
+		 }
+		 else {
+	                 returnItem = env.eval(cdr.getCar());
+		}
+	        bool hasAdditionalExp = false;
 		
 		Cons one_further_outExtending_tail = cdr.getCdr();
 		
@@ -90,12 +92,21 @@ namespace Tree
 		                                                                           // & nil term test
 	              if (one_further_outExtending_tail != null && !one_further_outExtending_tail.isNull()) 
 	               {
+		          if(one_further_outExtending_tail.getCar() == null){
+			      
+			      Console.WriteLine("Error: one of expressions in begin's arguments null .");
+
+                              return Nil.getInstance();
+          		   }
+			   else {   
+		                
 		          // set a conditional and (on hold prospect)  return element.
-	                  returnItem = envExtend1.eval(one_further_outExtending_tail);
+	                  returnItem = env.eval(one_further_outExtending_tail.getCar());
 			  hasAdditionalExp = true;
+			  }
 	                }
 		       // terminates with current return item.   // because cant go further in chain for begin expression chain
-		       else if (one_further_outExtending_tail != null && one_further_outExtending_tail.getCdr().isNull() ){
+		       else if (one_further_outExtending_tail != null && one_further_outExtending_tail.isNull() ){
 		          
 			   hasAdditionalExp = false;
 			   // end
@@ -119,22 +130,36 @@ namespace Tree
 		            //end
 	                   hasAdditionalExp = false;
 	                }
-		 else if (one_further_outExtending_tail.getCdr() != null && !one_further_outExtending_tail.getCdr().isNull()) {
-		          
-			  // build new environment on hand _ for each car to be computed at times.
-		          Environment envExtend1 = new Environment (env);
-			  
-			  
-			  returnItem = envExtend1.eval(one_further_outExtending_tail.getCdr() );
-			  hasAdditionalExp = true;
-		      }
-		 else
-		 // ends here with error
-		       {
-		           Console.WriteLine("Error: Null encountered further on in Begin's  expressions.");
+			// go to next in sequence of cdr's
+		        else if (one_further_outExtending_tail.getCdr() != null && 
+			       !one_further_outExtending_tail.getCdr().isNull()) { 
+		        
+			
+			
+			      if(one_further_outExtending_tail.getCdr().getCar() == null){
+			      
+			           Console.WriteLine("Error: one of expressions in begin's arguments null .");
 
-                           return Nil.getInstance();
-		       }
+                                   return Nil.getInstance();
+          		       }
+			       else {   
+		                
+		                    // set a conditional and (on hold prospect)  return element.                  
+			            returnItem = env.eval(one_further_outExtending_tail.getCdr().getCar() );
+			  
+			            hasAdditionalExp = true;
+			            // increment to next in sequence of cdr's
+			            one_further_outExtending_tail = one_further_outExtending_tail.getCdr();
+			  
+			  }
+		      }
+		     else
+		         // ends here with error
+		         {
+		              Console.WriteLine("Error: Null encountered further on in Begin's  expressions.");
+
+                              return Nil.getInstance();
+		         }
 	       } // while loop ended
 	       
 	        return returnItem;
