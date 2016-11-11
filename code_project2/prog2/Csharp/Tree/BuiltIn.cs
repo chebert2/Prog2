@@ -71,25 +71,53 @@ namespace Tree
 				if (args == null || args.isNull ())
 					return new StringLit ("Error: no arguments given for binary addition operation.");
 
+				// return zero if there are no arguments
+				if (args.isNull ())
+					return new IntLit (0);
 				// extend for all argument vars
 				// and
-				//check if any args have null or nil.
-				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
+				//check if first args have null
+				if (args.getCar () != null
+					&& args.getCdr () != null) {
 
-					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-						return new StringLit ("Error: arguments must be IntLit for binary addition.");
+
+					bool twoArguments_or_more;
+					// check if second argument is is nil.
+					if (args.getCdr ().isNull())
+						twoArguments_or_more = false;
+					// see if there is a second item ,    ... and check that last tail of args is nil.
+					else if (args.getCdr ().getCar () != null && args.getCdr ().getCdr ().isNull())
+						twoArguments_or_more = true;
+					else if (args.getCdr ().getCar () != null && !args.getCdr ().getCdr ().isNull())
+						return new StringLit ("Error: cannot process more than two args for binary addition.");
+					else
+						return new StringLit ("Error: in b+ , one of arguments for expression has null node.");
+
+					if (twoArguments_or_more == false) {
+						// check if argument is an intLit
+						if (args.getCar ().isNumber ()) 
+							// return the sole int lit node.
+							return args.getCar ();
+						 else 
+
+							return new StringLit ("Error: in b+ , one of arguments for expression has null node.");
+
+					}
 
 					else {
-						IntLit int1 = (IntLit) args.getCar ();
-						IntLit int2 = (IntLit) args.getCdr ().getCar ();
-						return new IntLit (int1.getInt () + int2.getInt () );
+
+						if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
+							return new StringLit ("Error: arguments must be IntLit for binary addition.");
+						else {
+							IntLit int1 = (IntLit)args.getCar ();
+							IntLit int2 = (IntLit)args.getCdr ().getCar ();
+							return new IntLit (int1.getInt () + int2.getInt ());
+						}
 					}
 
 				}
 				else
-					return new StringLit ("Error: more than two arguments for binary addition is not permissable.");
+					return new StringLit ("Error: in b+ , there is a null  external node");
 
 			}
 
@@ -627,7 +655,7 @@ namespace Tree
 
 						// check if the int values's are equal
 
-						if (intLit_1.Equals(intLit_2) )
+						if (intLit_1.getInt() == intLit_2.getInt() )
 							// success:    both same integer!
 							return BoolLit.getInstance (true);
 						else
@@ -742,13 +770,15 @@ namespace Tree
 
 						// check if the StringLit's are identical
 
-						if (String_1.Equals (String_2))
+						if (String_1.getString().Equals (String_2.getString() ) )
 							// success:    both same StringLit!
 							return BoolLit.getInstance (true);
 						else
 							return BoolLit.getInstance (false);
 					}
 
+
+					// eq? test note:  there is one caveat.  If the items are both quote terms... this will be handled directly in regular eval 
 
 					// first car is type Pair but  second item is not Pair... 
 					// or the other way around   (vice versa)
