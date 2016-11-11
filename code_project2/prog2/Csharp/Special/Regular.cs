@@ -2,6 +2,7 @@
 
 using System;
 using Tree;
+using System.IO;
 
 namespace Tree
 {
@@ -148,6 +149,85 @@ namespace Tree
 					else
 						return new StringLit ("Error: expression arg was null.");
 					    
+				}
+
+
+
+
+
+				// note: looking at special eq? case
+				// check if built in is eq?    only look at case of (eq? 'exp 'exp)
+				// note carefully: if symbol == null, null pointer will happen.
+				if (givenId.getSymbol ().getName ().Equals ("eq?")      && 
+					node1.getCdr ().getCar () != null                   &&
+					node1.getCdr ().getCdr () != null                   &&
+					node1.getCdr ().getCdr ().getCar () != null         &&
+					node1.getCdr ().getCdr ().getCdr () != null         &&
+					node1.getCdr ().getCdr ().getCdr ().isNull()        &&
+
+					node1.getCdr().getCar().isPair()                 &&
+					node1.getCdr().getCdr().getCar().isPair()
+				   
+				)
+
+
+				{
+					// first we must check if the arguments to (eq? ... )are in fact quote arguments.
+					Cons argument1 = (Cons) node1.getCdr ().getCar ();
+
+					Cons argument2 = (Cons) node1.getCdr ().getCdr ().getCar ();
+
+					if (argument1.getForm_ofCons () is Tree.Quote && argument2.getForm_ofCons () is Tree.Quote) {
+
+						String first_argument_printed = ""; 
+						String second_argument_printed = "";
+
+
+
+						// redirect output to evaulate if print of Pair nodes is same
+
+						var originalConsoleOut = Console.Out; // preserve the original stream
+						using(var writer = new StringWriter())
+						{
+							Console.SetOut(writer);
+
+							argument1.print (0); 
+
+							writer.Flush();
+
+							var myString = writer.ToString();
+
+							first_argument_printed = myString.TrimEnd('\n');
+
+
+						}
+						using(var writer1 = new StringWriter())
+						{
+							Console.SetOut(writer1);
+
+							argument2.print (0); 
+
+							writer1.Flush();
+
+							var myString_2 = writer1.ToString();
+
+							second_argument_printed = myString_2.TrimEnd('\n');
+
+
+						}
+
+
+						Console.SetOut(originalConsoleOut); // restore Console.Out
+
+
+						if (first_argument_printed.Equals (second_argument_printed))
+							return BoolLit.getInstance (true);
+						else
+							return BoolLit.getInstance (false);
+					}
+
+
+
 				}
 
 
