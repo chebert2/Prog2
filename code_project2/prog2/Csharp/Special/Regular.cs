@@ -47,10 +47,21 @@ namespace Tree
 					return new StringLit ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
 
 			} else if (node1.getCar ().isSymbol ()) {
-				firstElem_car = env1.lookup (node1.getCar ());
-				//report error if not   a builtin/  or /closure
-				if ( firstElem_car == null || !firstElem_car.isProcedure() )
-					return new StringLit ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
+
+				// start loop to get closure from obstructing intermediate symbolic expression.
+				bool first_element_is_not_closure = true;
+				firstElem_car = node1.getCar ();
+				while(first_element_is_not_closure) {
+					firstElem_car = env1.lookup (firstElem_car);
+					//report error if not   a builtin/  or /closure
+					if (firstElem_car == null)
+						return new StringLit ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
+					else if (firstElem_car.isProcedure ())
+						first_element_is_not_closure = false;
+
+				}
+
+
 
 			}
 			// this would be improper end for cons   regular expression.
