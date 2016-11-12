@@ -62,6 +62,17 @@ namespace Tree
 
 			if (this.symbol.getName ().Equals ("read"))
 				return (Node)Scheme4101.parser.parseExp ();
+				
+			else if(this.symbol.getName().Equals("display")) {
+				Tree.BuiltIn.builtIn_display__do_not_print_double_quotes = true;
+
+				args.getCar().print (0);
+
+				Tree.BuiltIn.builtIn_display__do_not_print_double_quotes = false;
+
+				return Nil.getInstance ();
+			}
+
 			else if (this.symbol.getName ().Equals ("b+")) {
 
 				// if there are no arguments, report error
