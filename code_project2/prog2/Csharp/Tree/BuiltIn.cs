@@ -52,7 +52,7 @@ namespace Tree
 			// throw error:
 			return new StringLit ("Error: built eval : in is not meant to be used for evaluate in convention.");
 		}
-
+   
 
         // TODO: The method apply() should be defined in class Node
         // to report an error.  It should be overridden only in classes
@@ -60,9 +60,14 @@ namespace Tree
 		public override Node apply (Node args)
         {
 
-			if (this.symbol.getName ().Equals ("read"))
-				return (Node)Scheme4101.parser.parseExp ();
-				
+		if (this.symbol.getName ().Equals ("read"))
+			return (Node)Scheme4101.parser.parseExp ();
+		
+		 else if(this.symbol.getName().Equals("write"):
+		 {
+		        arg1.print(0);
+			return Console.Write("");
+		 }
 			else if(this.symbol.getName().Equals("display")) {
 				Tree.BuiltIn.builtIn_display__do_not_print_double_quotes = true;
 
