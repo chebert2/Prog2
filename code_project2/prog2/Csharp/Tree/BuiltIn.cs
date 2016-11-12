@@ -62,14 +62,14 @@ namespace Tree
 
 			if (this.symbol.getName ().Equals ("read"))
 				return (Node)Scheme4101.parser.parseExp ();
-
-
-
 			else if (this.symbol.getName ().Equals ("b+")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for binary addition operation.");
+				if (args == null) {
+					Console.WriteLine ("Error: no arguments given for binary addition operation.");
+					return Nil.getInstance ();
+
+				}
 
 				// return zero if there are no arguments
 				if (args.isNull ())
@@ -78,158 +78,175 @@ namespace Tree
 				// and
 				//check if first args have null
 				if (args.getCar () != null
-					&& args.getCdr () != null) {
+				    && args.getCdr () != null) {
 
 
 					bool twoArguments_or_more;
 					// check if second argument is is nil.
-					if (args.getCdr ().isNull())
+					if (args.getCdr ().isNull ())
 						twoArguments_or_more = false;
 					// see if there is a second item ,    ... and check that last tail of args is nil.
-					else if (args.getCdr ().getCar () != null && args.getCdr ().getCdr ().isNull())
+					else if (args.getCdr ().getCar () != null && args.getCdr ().getCdr ().isNull ())
 						twoArguments_or_more = true;
-					else if (args.getCdr ().getCar () != null && !args.getCdr ().getCdr ().isNull())
-						return new StringLit ("Error: cannot process more than two args for binary addition.");
-					else
-						return new StringLit ("Error: in b+ , one of arguments for expression has null node.");
+					else if (args.getCdr ().getCar () != null && !args.getCdr ().getCdr ().isNull ()) {
+						Console.WriteLine ("Error: cannot process more than two args for binary addition.");
+						return Nil.getInstance ();
+					} else {
+						Console.WriteLine ("Error: in b+ , one of arguments for expression has null node.");
+						return Nil.getInstance ();
+					}
 
 					if (twoArguments_or_more == false) {
 						// check if argument is an intLit
 						if (args.getCar ().isNumber ()) 
 							// return the sole int lit node.
 							return args.getCar ();
-						 else 
+						else { 
+							Console.WriteLine ("Error: in b+ , one of arguments for expression has null node.");
+							return Nil.getInstance ();
+						}
 
-							return new StringLit ("Error: in b+ , one of arguments for expression has null node.");
+					} else {
 
-					}
+						if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ()) {
 
-					else {
-
-						if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-							return new StringLit ("Error: arguments must be IntLit for binary addition.");
-						else {
+							Console.WriteLine ("Error: arguments must be IntLit for binary addition.");
+							return Nil.getInstance ();
+						} else {
 							IntLit int1 = (IntLit)args.getCar ();
 							IntLit int2 = (IntLit)args.getCdr ().getCar ();
 							return new IntLit (int1.getInt () + int2.getInt ());
 						}
 					}
 
+				} else {
+					Console.WriteLine ("Error: in b+ , there is a null  external node");
+					return Nil.getInstance ();
 				}
-				else
-					return new StringLit ("Error: in b+ , there is a null  external node");
 
-			}
-
-			else if (this.symbol.getName ().Equals ("b-")) {
+			} else if (this.symbol.getName ().Equals ("b-")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for binary subtraction operation.");
+				if (args == null || args.isNull ()) {
+
+					Console.WriteLine ("Error: no arguments given for binary subtraction operation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 				// and
 				//check if any args have null or nil.
 				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
+				    && args.getCdr () != null && args.getCdr ().getCar () != null
+				    && args.getCdr ().getCdr ().isNull ()) {
 
-					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-						return new StringLit ("Error: arguments must be IntLit for binary subtraction.");
+					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ()) {
 
-					else  {
-						IntLit int1 = (IntLit) args.getCar ();
-						IntLit int2 = (IntLit) args.getCdr ().getCar ();
-						return new IntLit (int1.getInt () - int2.getInt () );
+						Console.WriteLine ("Error: arguments must be IntLit for binary subtraction.");
+						return Nil.getInstance ();
+					} else {
+						IntLit int1 = (IntLit)args.getCar ();
+						IntLit int2 = (IntLit)args.getCdr ().getCar ();
+						return new IntLit (int1.getInt () - int2.getInt ());
 					}
+				} else {
+					Console.WriteLine ("Error: more than two arguments for binary subtraction is not permissable.");
+					return Nil.getInstance ();
 				}
-				else
-					return new StringLit ("Error: more than two arguments for binary subtraction is not permissable.");
 
-			}
-
-			else if (this.symbol.getName ().Equals ("b*")) {
+			} else if (this.symbol.getName ().Equals ("b*")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for binary multiplication operation.");
+				if (args == null || args.isNull ()) {
+
+					Console.WriteLine ("Error: no arguments given for binary multiplication operation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 				// and
 				//check if any args have null or nil.
 				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
+				    && args.getCdr () != null && args.getCdr ().getCar () != null
+				    && args.getCdr ().getCdr ().isNull ()) {
 
-					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-						return new StringLit ("Error: arguments must be IntLit for binary multiplication.");
-						
-					else {
-						IntLit int1 = (IntLit) args.getCar ();
-						IntLit int2 = (IntLit) args.getCdr ().getCar ();
-						return new IntLit (int1.getInt () * int2.getInt () );
-					}
+					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ()) {
 
-				}
-				else
-					return new StringLit ("Error: more than two arguments for binary multiplication is not permissable.");
-
-			}
-
-			else if (this.symbol.getName ().Equals ("b/")) {
-
-				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for binary division operation.");
-
-				// extend for all argument vars
-				// and
-				//check if any args have null or nil.
-				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
-
-					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-						return new StringLit ("Error: arguments must be IntLit for binary division.");
-
-
-					else  {
-						IntLit int1 = (IntLit) args.getCar ();
-						IntLit int2 = (IntLit) args.getCdr ().getCar ();
-						if (int2.getInt () == 0)
-							return new StringLit ("Error: input not acceptable. cannot divide by zero.");
-						else
-							return new IntLit (int1.getInt () / int2.getInt () );
+						Console.WriteLine ("Error: arguments must be IntLit for binary multiplication.");
+						return Nil.getInstance ();
+					} else {
+						IntLit int1 = (IntLit)args.getCar ();
+						IntLit int2 = (IntLit)args.getCdr ().getCar ();
+						return new IntLit (int1.getInt () * int2.getInt ());
 					}
 
+				} else {
+
+					Console.WriteLine ("Error: more than two arguments for binary multiplication is not permissable.");
+					return Nil.getInstance ();
 				}
-				else
-					return new StringLit ("Error: more than two arguments for binary division is not permissable.");
 
-			}
-
-			else if (this.symbol.getName ().Equals ("b=")) {
+			} else if (this.symbol.getName ().Equals ("b/")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for binary equality test operation.");
+				if (args == null || args.isNull ()) {
+
+					Console.WriteLine ("Error: no arguments given for binary division operation.");
+					return Nil.getInstance ();
+				}
+				// extend for all argument vars
+				// and
+				//check if any args have null or nil.
+				if (args != null && args.getCar () != null
+				    && args.getCdr () != null && args.getCdr ().getCar () != null
+				    && args.getCdr ().getCdr ().isNull ()) {
+
+					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ()) {
+
+						Console.WriteLine ("Error: arguments must be IntLit for binary division.");
+						return Nil.getInstance ();
+					} else {
+						IntLit int1 = (IntLit)args.getCar ();
+						IntLit int2 = (IntLit)args.getCdr ().getCar ();
+						if (int2.getInt () == 0) {
+
+							Console.WriteLine ("Error: input not acceptable. cannot divide by zero.");
+							return Nil.getInstance ();
+						} else
+							return new IntLit (int1.getInt () / int2.getInt ());
+					}
+
+				} else {
+
+					Console.WriteLine ("Error: more than two arguments for binary division is not permissable.");
+					return Nil.getInstance ();
+				}
+
+			} else if (this.symbol.getName ().Equals ("b=")) {
+
+				// if there are no arguments, report error
+				if (args == null || args.isNull ()) {
+
+					Console.WriteLine ("Error: no arguments given for binary equality test operation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 				// and
 				//check if any args have null or nil.
 				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
+				    && args.getCdr () != null && args.getCdr ().getCar () != null
+				    && args.getCdr ().getCdr ().isNull ()) {
 
-					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-						return new StringLit ("Error: arguments must be IntLit for binary equality test.");
+					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ()) {
 
+						Console.WriteLine ("Error: arguments must be IntLit for binary equality test.");
+						return Nil.getInstance ();
+					} else {
+						IntLit int1 = (IntLit)args.getCar ();
+						IntLit int2 = (IntLit)args.getCdr ().getCar ();
 
-					else  {
-						IntLit int1 = (IntLit) args.getCar ();
-						IntLit int2 = (IntLit) args.getCdr ().getCar ();
-
-						bool resultOfTest = (int1.getInt() == int2.getInt());
+						bool resultOfTest = (int1.getInt () == int2.getInt ());
 
 						if (resultOfTest)
 							return BoolLit.getInstance (true);
@@ -237,34 +254,37 @@ namespace Tree
 							return BoolLit.getInstance (false);
 					}
 
+				} else {
+
+					Console.WriteLine ("Error: more than two arguments for binary equality test is not permissable.");
+					return Nil.getInstance ();
 				}
-				else
-					return new StringLit ("Error: more than two arguments for binary equality test is not permissable.");
 
-			}
-
-
-			else if (this.symbol.getName ().Equals ("b<")) {
+			} else if (this.symbol.getName ().Equals ("b<")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for binary less than test operation.");
+				if (args == null || args.isNull ()) {
+
+					Console.WriteLine ("Error: no arguments given for binary less than test operation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 				// and
 				//check if any args have null or nil.
 				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
+				    && args.getCdr () != null && args.getCdr ().getCar () != null
+				    && args.getCdr ().getCdr ().isNull ()) {
 
-					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-						return new StringLit ("Error: arguments must be IntLit for binary less than test.");
+					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ()) {
 
-					else  {
-						IntLit int1 = (IntLit) args.getCar ();
-						IntLit int2 = (IntLit) args.getCdr ().getCar ();
+						Console.WriteLine ("Error: arguments must be IntLit for binary less than test.");
+						return Nil.getInstance ();
+					} else {
+						IntLit int1 = (IntLit)args.getCar ();
+						IntLit int2 = (IntLit)args.getCdr ().getCar ();
 
-						bool resultOfTest = (int1.getInt() < int2.getInt());
+						bool resultOfTest = (int1.getInt () < int2.getInt ());
 
 						if (resultOfTest)
 							return BoolLit.getInstance (true);
@@ -272,33 +292,34 @@ namespace Tree
 							return BoolLit.getInstance (false);
 					}
 
+				} else {
+					Console.WriteLine ("Error: more than two arguments for binary less than test is not permissable.");
+					return Nil.getInstance ();
 				}
-				else
-					return new StringLit ("Error: more than two arguments for binary less than test is not permissable.");
-
-			}
-
-			else if (this.symbol.getName ().Equals ("b>")) {
+			} else if (this.symbol.getName ().Equals ("b>")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for binary greater than test operation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for binary greater than test operation.");
+					return Nil.getInstance ();
+				}
 				// extend for all argument vars
 				// and
 				//check if any args have null or nil.
 				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
+				    && args.getCdr () != null && args.getCdr ().getCar () != null
+				    && args.getCdr ().getCdr ().isNull ()) {
 
-					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-						return new StringLit ("Error: arguments must be IntLit for binary greater than test.");
-						
-					else {
-						IntLit int1 = (IntLit) args.getCar ();
-						IntLit int2 = (IntLit) args.getCdr ().getCar ();
+					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ()) {
 
-						bool resultOfTest = (int1.getInt() > int2.getInt());
+						Console.WriteLine ("Error: arguments must be IntLit for binary greater than test.");
+						return Nil.getInstance ();
+					} else {
+						IntLit int1 = (IntLit)args.getCar ();
+						IntLit int2 = (IntLit)args.getCdr ().getCar ();
+
+						bool resultOfTest = (int1.getInt () > int2.getInt ());
 
 						if (resultOfTest)
 							return BoolLit.getInstance (true);
@@ -306,34 +327,35 @@ namespace Tree
 							return BoolLit.getInstance (false);
 					}
 
+				} else {
+
+					Console.WriteLine ("Error: more than two arguments for binary greater than test is not permissable.");
+					return Nil.getInstance ();
 				}
-				else
-					return new StringLit ("Error: more than two arguments for binary greater than test is not permissable.");
-
-			}
-
-
-			else if (this.symbol.getName ().Equals ("b<=")) {
+			} else if (this.symbol.getName ().Equals ("b<=")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for binary less than equal than test operation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for binary less than equal than test operation.");
+					return Nil.getInstance ();
+				}
 				// extend for all argument vars
 				// and
 				//check if any args have null or nil.
 				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
+				    && args.getCdr () != null && args.getCdr ().getCar () != null
+				    && args.getCdr ().getCdr ().isNull ()) {
 
-					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-						return new StringLit ("Error: arguments must be IntLit for binary less than equal than test.");
+					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ()) {
 
-					else   {
-						IntLit int1 = (IntLit) args.getCar ();
-						IntLit int2 = (IntLit) args.getCdr ().getCar ();
+						Console.WriteLine ("Error: arguments must be IntLit for binary less than equal than test.");
+						return Nil.getInstance ();
+					} else {
+						IntLit int1 = (IntLit)args.getCar ();
+						IntLit int2 = (IntLit)args.getCdr ().getCar ();
 
-						bool resultOfTest = (int1.getInt() <= int2.getInt());
+						bool resultOfTest = (int1.getInt () <= int2.getInt ());
 
 						if (resultOfTest)
 							return BoolLit.getInstance (true);
@@ -341,33 +363,36 @@ namespace Tree
 							return BoolLit.getInstance (false);
 					}
 
+				} else {
+
+					Console.WriteLine ("Error: more than two arguments for binary less than equal than test is not permissable.");
+					return Nil.getInstance ();
 				}
-				else
-					return new StringLit ("Error: more than two arguments for binary less than equal than test is not permissable.");
-
-			}
-
-			else if (this.symbol.getName ().Equals ("b>=")) {
+			} else if (this.symbol.getName ().Equals ("b>=")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for binary greater than equal than test operation.");
+				if (args == null || args.isNull ()) {
+
+					Console.WriteLine ("Error: no arguments given for binary greater than equal than test operation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 				// and
 				//check if any args have null or nil.
 				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
+				    && args.getCdr () != null && args.getCdr ().getCar () != null
+				    && args.getCdr ().getCdr ().isNull ()) {
 
-					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ())
-						return new StringLit ("Error: arguments must be IntLit for binary greater than equal than test.");
+					if (!args.getCar ().isNumber () || !args.getCdr ().getCar ().isNumber ()) {
 
-					else  {
-						IntLit int1 = (IntLit) args.getCar ();
-						IntLit int2 = (IntLit) args.getCdr ().getCar ();
+						Console.WriteLine ("Error: arguments must be IntLit for binary greater than equal than test.");
+						return Nil.getInstance ();
+					} else {
+						IntLit int1 = (IntLit)args.getCar ();
+						IntLit int2 = (IntLit)args.getCdr ().getCar ();
 
-						bool resultOfTest = (int1.getInt() >= int2.getInt());
+						bool resultOfTest = (int1.getInt () >= int2.getInt ());
 
 						if (resultOfTest)
 							return BoolLit.getInstance (true);
@@ -375,25 +400,27 @@ namespace Tree
 							return BoolLit.getInstance (false);
 					}
 
+				} else {
+
+					Console.WriteLine ("Error: more than two arguments for binary greater than equal than test is not permissable.");
+					return Nil.getInstance ();
 				}
-				else
-					return new StringLit ("Error: more than two arguments for binary greater than equal than test is not permissable.");
 
-			}
-
-			else if (this.symbol.getName ().Equals ("null?")) {
+			} else if (this.symbol.getName ().Equals ("null?")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for testing null evaluation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for testing null evaluation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 
 				// check if number of args is correct
 				bool argument_number_good = false;
 				if (args != null && args.getCar () != null
-					&& args.getCdr() != null  && args.getCdr ().isNull () )
+				    && args.getCdr () != null && args.getCdr ().isNull ())
 					argument_number_good = true;
 
 				if (argument_number_good) {
@@ -403,25 +430,26 @@ namespace Tree
 					else
 						return BoolLit.getInstance (false);
 				
+				} else {
+
+					Console.WriteLine ("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+					return Nil.getInstance ();
 				}
-
-
-				else
-					return new StringLit("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
-			}
-			else if (this.symbol.getName().Equals("symbol?")) {
+			} else if (this.symbol.getName ().Equals ("symbol?")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for testing symbol evaluation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for testing symbol evaluation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 
 				// check if number of args is correct
 				bool argument_number_good = false;
 				if (args != null && args.getCar () != null
-					&& args.getCdr() != null  && args.getCdr ().isNull () )
+				    && args.getCdr () != null && args.getCdr ().isNull ())
 					argument_number_good = true;
 
 				if (argument_number_good) {
@@ -431,24 +459,26 @@ namespace Tree
 					else
 						return BoolLit.getInstance (false);
 
-				}
-				else
-					return new StringLit("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+				} else {
 
-			}
-			else if (this.symbol.getName().Equals("number?")) {
+					Console.WriteLine ("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+					return Nil.getInstance ();
+				}
+			} else if (this.symbol.getName ().Equals ("number?")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for testing number evaluation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for testing number evaluation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 
 				// check if number of args is correct
 				bool argument_number_good = false;
 				if (args != null && args.getCar () != null
-					&& args.getCdr() != null  && args.getCdr ().isNull () )
+				    && args.getCdr () != null && args.getCdr ().isNull ())
 					argument_number_good = true;
 
 				if (argument_number_good) {
@@ -456,24 +486,26 @@ namespace Tree
 						return BoolLit.getInstance (true);
 					else
 						return BoolLit.getInstance (false);
-				}
-				else
-					return new StringLit("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+				} else {
 
-			}
-			else if (this.symbol.getName().Equals("boolean?")) {
+					Console.WriteLine ("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+					return Nil.getInstance ();
+				}
+			} else if (this.symbol.getName ().Equals ("boolean?")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for testing boolean evaluation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for testing boolean evaluation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 
 				// check if number of args is correct
 				bool argument_number_good = false;
 				if (args != null && args.getCar () != null
-					&& args.getCdr() != null  && args.getCdr ().isNull () )
+				    && args.getCdr () != null && args.getCdr ().isNull ())
 					argument_number_good = true;
 
 				if (argument_number_good) {
@@ -481,25 +513,27 @@ namespace Tree
 						return BoolLit.getInstance (true);
 					else
 						return BoolLit.getInstance (false);
+				} else {
+
+					Console.WriteLine ("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+					return Nil.getInstance ();
 				}
 
-				else
-					return new StringLit("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
-
-			}
-			else if (this.symbol.getName().Equals("procedure?")) {
+			} else if (this.symbol.getName ().Equals ("procedure?")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for testing procedure evaluation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for testing procedure evaluation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 
 				// check if number of args is correct
 				bool argument_number_good = false;
 				if (args != null && args.getCar () != null
-					&& args.getCdr() != null  && args.getCdr ().isNull () )
+				    && args.getCdr () != null && args.getCdr ().isNull ())
 					argument_number_good = true;
 
 				if (argument_number_good) {
@@ -507,26 +541,26 @@ namespace Tree
 						return BoolLit.getInstance (true);
 					else
 						return BoolLit.getInstance (false);
+				} else {
+
+					Console.WriteLine ("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+					return Nil.getInstance ();
 				}
-
-				else
-					return new StringLit("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
-
-			}
-
-			else if (this.symbol.getName().Equals("pair?")) {
+			} else if (this.symbol.getName ().Equals ("pair?")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for testing pair evaluation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for testing pair evaluation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 
 				// check if number of args is correct
 				bool argument_number_good = false;
 				if (args != null && args.getCar () != null
-					&& args.getCdr() != null  && args.getCdr ().isNull () )
+				    && args.getCdr () != null && args.getCdr ().isNull ())
 					argument_number_good = true;
 
 				if (argument_number_good) {
@@ -534,25 +568,26 @@ namespace Tree
 						return BoolLit.getInstance (true);
 					else
 						return BoolLit.getInstance (false);
+				} else {
+
+					Console.WriteLine ("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+					return Nil.getInstance ();
 				}
-
-				else
-					return new StringLit("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
-
-			}
-			else if (this.symbol.getName().Equals("environment?")) {
+			} else if (this.symbol.getName ().Equals ("environment?")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for testing environment evaluation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for testing environment evaluation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 
 				// check if number of args is correct
 				bool argument_number_good = false;
 				if (args != null && args.getCar () != null
-					&& args.getCdr() != null  && args.getCdr ().isNull () )
+				    && args.getCdr () != null && args.getCdr ().isNull ())
 					argument_number_good = true;
 
 				if (argument_number_good) {
@@ -560,24 +595,26 @@ namespace Tree
 						return BoolLit.getInstance (true);
 					else
 						return BoolLit.getInstance (false);
-				}
-				else
-					return new StringLit("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+				} else {
 
-			}
-			else if (this.symbol.getName().Equals("string?")) {
+					Console.WriteLine ("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+					return Nil.getInstance ();
+				}
+			} else if (this.symbol.getName ().Equals ("string?")) {
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for testing string evaluation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for testing string evaluation.");
+					return Nil.getInstance ();
+				}
 
 				// extend for all argument vars
 
 				// check if number of args is correct
 				bool argument_number_good = false;
 				if (args != null && args.getCar () != null
-					&& args.getCdr() != null  && args.getCdr ().isNull () )
+				    && args.getCdr () != null && args.getCdr ().isNull ())
 					argument_number_good = true;
 
 				if (argument_number_good) {
@@ -585,26 +622,29 @@ namespace Tree
 						return BoolLit.getInstance (true);
 					else
 						return BoolLit.getInstance (false);
-				}
-				else
-					return new StringLit("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+				} else {
 
+					Console.WriteLine ("Error: wrong number of arguments for test. only need 1 cons node with nil tail for argument.");
+					return Nil.getInstance ();
+				}
 			}
 
 			// working on predicate built in :    eq?
-			else if (this.symbol.getName().Equals("eq?")) {
+			else if (this.symbol.getName ().Equals ("eq?")) {
 
 
 				// if there are no arguments, report error
-				if (args == null || args.isNull ())
-					return new StringLit ("Error: no arguments given for eq?   test operation.");
+				if (args == null || args.isNull ()) {
 
+					Console.WriteLine ("Error: no arguments given for eq?   test operation.");
+					return Nil.getInstance ();
+				}
 				// extend for all argument vars
 				// and
 				//check if any args have null or nil.
 				if (args != null && args.getCar () != null
-					&& args.getCdr () != null && args.getCdr ().getCar () != null
-					&& args.getCdr ().getCdr ().isNull ()) {
+				    && args.getCdr () != null && args.getCdr ().getCar () != null
+				    && args.getCdr ().getCdr ().isNull ()) {
 
 					//if (!args.getCar () || !args.getCdr ().getCar () )
 
@@ -649,13 +689,13 @@ namespace Tree
 					else if (args.getCar ().isNumber () && args.getCdr ().getCar ().isNumber ()) {
 
 						// cast to new IntLits
-						IntLit intLit_1 = (IntLit) args.getCar ();
-						IntLit intLit_2 = (IntLit) args.getCdr ().getCar ();
+						IntLit intLit_1 = (IntLit)args.getCar ();
+						IntLit intLit_2 = (IntLit)args.getCdr ().getCar ();
 
 
 						// check if the int values's are equal
 
-						if (intLit_1.getInt() == intLit_2.getInt() )
+						if (intLit_1.getInt () == intLit_2.getInt ())
 							// success:    both same integer!
 							return BoolLit.getInstance (true);
 						else
@@ -673,12 +713,12 @@ namespace Tree
 					else if (args.getCar ().isBool () && args.getCdr ().getCar ().isBool ()) {
 						// cast nodes as new booleanNodes
 
-						BoolLit boolVal1 = (BoolLit) args.getCar ();
-						BoolLit boolVal2 = (BoolLit) args.getCdr ().getCar ();
+						BoolLit boolVal1 = (BoolLit)args.getCar ();
+						BoolLit boolVal2 = (BoolLit)args.getCdr ().getCar ();
 
 						// check if the bool's equal
 
-						if (boolVal1.Equals(boolVal2))
+						if (boolVal1.Equals (boolVal2))
 							// success:    both same bool!
 							return BoolLit.getInstance (true);
 						else
@@ -696,8 +736,8 @@ namespace Tree
 					// check if both builtIn   now...
 					else if (args.getCar ().isBuiltIn () && args.getCdr ().getCar ().isBuiltIn ()) {
 						// cast nodes as new builtIn
-						BuiltIn builtIn_val_1 = (BuiltIn) args.getCar ();
-						BuiltIn builtIn_val_2 = (BuiltIn) args.getCdr ().getCar ();
+						BuiltIn builtIn_val_1 = (BuiltIn)args.getCar ();
+						BuiltIn builtIn_val_2 = (BuiltIn)args.getCdr ().getCar ();
 
 						// check if the builtIn's are identical
 
@@ -721,8 +761,8 @@ namespace Tree
 					// check if both closure   now...
 					else if (args.getCar ().isProcedure () && args.getCdr ().getCar ().isProcedure ()) {
 						// cast nodes as new builtIn
-						Closure closure_val_1 = (Closure) args.getCar ();
-						Closure closure_val_2 = (Closure) args.getCdr ().getCar ();
+						Closure closure_val_1 = (Closure)args.getCar ();
+						Closure closure_val_2 = (Closure)args.getCdr ().getCar ();
 
 						// check if the closure's are identical
 
@@ -744,8 +784,8 @@ namespace Tree
 					// check if both environment   now...
 					else if (args.getCar ().isEnvironment () && args.getCdr ().getCar ().isEnvironment ()) {
 						// cast nodes as new Environment
-						Environment environ_1 = (Environment) args.getCar ();
-						Environment environ_2 = (Environment) args.getCdr ().getCar ();
+						Environment environ_1 = (Environment)args.getCar ();
+						Environment environ_2 = (Environment)args.getCdr ().getCar ();
 
 						// check if the environment's are identical
 
@@ -765,12 +805,12 @@ namespace Tree
 					// check if both String   now...
 					else if (args.getCar ().isString () && args.getCdr ().getCar ().isString ()) {
 						// cast nodes as new StringLits
-						StringLit String_1 = (StringLit) args.getCar ();
-						StringLit String_2 = (StringLit) args.getCdr ().getCar ();
+						StringLit String_1 = (StringLit)args.getCar ();
+						StringLit String_2 = (StringLit)args.getCdr ().getCar ();
 
 						// check if the StringLit's are identical
 
-						if (String_1.getString().Equals (String_2.getString() ) )
+						if (String_1.getString ().Equals (String_2.getString ()))
 							// success:    both same StringLit!
 							return BoolLit.getInstance (true);
 						else
@@ -789,8 +829,8 @@ namespace Tree
 					// check if both are type Pair   now...
 					else if (args.getCar ().isPair () && args.getCdr ().getCar ().isPair ()) {
 						// cast nodes as new cons Pair
-						Cons cons_1 = (Cons) args.getCar ();
-						Cons cons_2 = (Cons) args.getCdr ().getCar ();
+						Cons cons_1 = (Cons)args.getCar ();
+						Cons cons_2 = (Cons)args.getCdr ().getCar ();
 
 						// check if the Cons's are identical
 
@@ -801,20 +841,23 @@ namespace Tree
 							return BoolLit.getInstance (false);
 
 						// illegal function for argument
-					} else
-						return new StringLit ("Error: Argument types for eq? cannot be recognized in context.");
+					} else {
 
+						Console.WriteLine ("Error: Argument types for eq? cannot be recognized in context.");
+						return Nil.getInstance ();
+					}
 
+				} else {
+
+					Console.WriteLine ("Error: null parameter _ or _ more than two arguments for eq?  test is not permissable.");
+					return Nil.getInstance ();
 				}
-				else
-					return new StringLit ("Error: null parameter _ or _ more than two arguments for eq?  test is not permissable.");
+			} else {
+
+				Console.WriteLine ("Error: builtin is not identifiable.");
+				return Nil.getInstance ();
 
 			}
-
-
-
-			else
-				return new StringLit("Error: builtin is not identifiable.");
 
 
 
