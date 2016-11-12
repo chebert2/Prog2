@@ -25,7 +25,8 @@ namespace Tree
 
 			if (node1 == null || node1.getCar () == null) {
 
-				return new StringLit ("Error: the expression is not initialized to values: null list and car");
+				Console.WriteLine ("Error: the expression is not initialized to values: null list and car");
+				return Nil.getInstance ();
 			}
 
 
@@ -43,9 +44,11 @@ namespace Tree
 				Environment envExtend = new Environment (env1);
 				firstElem_car = node1.getCar ().eval (envExtend);
 				//report error if not   a builtin/  or /closure
-				if (firstElem_car == null || !firstElem_car.isProcedure ())
-					return new StringLit ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
+				if (firstElem_car == null || !firstElem_car.isProcedure ()) {
 
+					Console.WriteLine ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
+					return Nil.getInstance ();
+				}
 			} else if (node1.getCar ().isSymbol ()) {
 
 				// start loop to get closure from obstructing intermediate symbolic expression.
@@ -54,8 +57,11 @@ namespace Tree
 				while(first_element_is_not_closure) {
 					firstElem_car = env1.lookup (firstElem_car);
 					//report error if not   a builtin/  or /closure
-					if (firstElem_car == null)
-						return new StringLit ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
+					if (firstElem_car == null) {
+
+						Console.WriteLine ("Error: regular expression needs a function builtin/closure for first term!, __ + returning null instead.");
+						return Nil.getInstance ();
+					}
 					else if (firstElem_car.isProcedure ())
 						first_element_is_not_closure = false;
 
@@ -65,8 +71,10 @@ namespace Tree
 
 			}
 			// this would be improper end for cons   regular expression.
-			if (node1.getCdr () == null)
-				return null;
+			if (node1.getCdr () == null) {
+				Console.WriteLine ("error: one of regular expressions elements is null.");
+				return Nil.getInstance ();
+			}
 
 			// special builtIn   eval  case.
 			if (firstElem_car.isBuiltIn ()) {
@@ -82,9 +90,11 @@ namespace Tree
 
 					// check for null values now  so null pointer doesnt get encountered
 					if (node1.getCdr ().getCar () == null || node1.getCdr ().getCdr () == null ||
-					    node1.getCdr ().getCdr ().getCar () == null)
-						return new StringLit ("Error: lacking one of the following for eval : expression or environment.");
+					    node1.getCdr ().getCdr ().getCar () == null) {
 
+						Console.WriteLine ("Error: lacking one of the following for eval : expression or environment.");
+						return Nil.getInstance ();
+					}
 
 
 					// side maneuver. _ work out the environment first...
@@ -95,17 +105,21 @@ namespace Tree
 					if (env_symbol_to_lookup.isSymbol ()) {
 						if (env1.lookup (env_symbol_to_lookup) != null)
 							environment_found = env1.lookup (env_symbol_to_lookup);
-						else
-							return new StringLit ("Error: environment symbol was not found.");
+						else {
+							Console.WriteLine ("Error: environment symbol was not found.");
+							return Nil.getInstance ();
+						}
 					} // check if expression needs to be evaluated
 					else if (env_symbol_to_lookup.isPair ())
 						environment_found = env_symbol_to_lookup.eval (envExtend);
  
 					if (environment_found != null && environment_found.isEnvironment ())
 						environment_taken = true;
-					else
-						return new StringLit ("Error: evaluation op_ did not find a fitting environment.");
+					else {
 
+						Console.WriteLine ("Error: evaluation op_ did not find a fitting environment.");
+						return Nil.getInstance ();
+					}
 					// working on expression now
 					Node args_to_eval = null;
 
@@ -146,20 +160,23 @@ namespace Tree
 						if (node_symbol_expression != null)
 							// copy evaluated symbol and then the environment
 							args_to_eval = node_symbol_expression;
-						else
-							return new StringLit ("Error: first expression argument symbol not found.");
+						else {
+							Console.WriteLine ("Error: first expression argument symbol not found.");
+							return Nil.getInstance ();
+						}
 					}
 					// return the built in eval of args and environment given
 					if (args_to_eval != null) {
 						Environment environment_copy_found = (Environment)environment_found;
-						if (args_to_eval.isPair())
-							return args_to_eval.eval(environment_copy_found);
+						if (args_to_eval.isPair ())
+							return args_to_eval.eval (environment_copy_found);
 						else
-							return args_to_eval.eval(environment_copy_found);
+							return args_to_eval.eval (environment_copy_found);
+					} else {
+
+						Console.WriteLine ("Error: expression arg was null.");
+						return Nil.getInstance ();
 					}
-					else
-						return new StringLit ("Error: expression arg was null.");
-					    
 				}
 
 
@@ -263,8 +280,11 @@ namespace Tree
 			if (hasArguments){
 
 
-				if (args_given.getCdr () == null || args_given.getCar () == null)
-					return new StringLit ("Error: one of passed arguments in function expression is null.");
+				if (args_given.getCdr () == null || args_given.getCar () == null) {
+
+					Console.WriteLine ("Error: one of passed arguments in function expression is null.");
+					return Nil.getInstance ();
+				}
 
 
 				// need to evaluate args (each car separately)... and then return what is resulting list of elements...
@@ -293,10 +313,13 @@ namespace Tree
 
 					// check if eval is not null
 					Node evalItem1 = args_given.getCar ().eval (envExtend1);
-					if( evalItem1 != null)
+					if (evalItem1 != null)
 						evaluated_argsList__in_progress = new Cons (evalItem1, added_fringe_con);
-					else
-						return new StringLit("Error: one of the args items in regular function was null. ");
+					else {
+
+						Console.WriteLine ("Error: one of the args items in regular function was null. ");
+						return Nil.getInstance ();
+					}
 				
 					// under the alias of fringe_cons...
 				    // we will continue this reference down to assess the next fringe branch
@@ -310,10 +333,13 @@ namespace Tree
 
 					// check if eval is not null
 					Node evalItem1 = args_given.getCar ().eval (envExtend1);
-						if( evalItem1 != null)
-							evaluated_argsList__in_progress = new Cons (evalItem1, Nil.getInstance() );
-						else
-							return new StringLit("Error: the sole additional argument item  in regular function was null. ");
+					if (evalItem1 != null)
+						evaluated_argsList__in_progress = new Cons (evalItem1, Nil.getInstance ());
+					else {
+
+						Console.WriteLine ("Error: the sole additional argument item  in regular function was null. ");
+						return Nil.getInstance ();
+					}
 				}
 
 				// done with first step in two levels descendents
@@ -322,9 +348,11 @@ namespace Tree
 				// get rest of fringes
    				while ( hasMoreDescendents )
 			    {
-					if(args_given.getCdr() == null)
-						return new StringLit("Error: one of the later argument items  in regular function was null. ");
+					if (args_given.getCdr () == null) {
 
+						Console.WriteLine ("Error: one of the later argument items  in regular function was null. ");
+						return Nil.getInstance ();
+					}
 					// precaution for null pointer   so it is legal to use the cdr after this test
 					if (args_given.getCdr().isPair ()) {
 
@@ -340,11 +368,13 @@ namespace Tree
 
 						// check if additional eval items are not null
 						Node evalItem_more = args_given.getCar().eval(envExtend2);
-						if( evalItem_more != null)
-							fringe_cons.setCdr(new Cons (evalItem_more, added_fringe_con ));
-						else
-							return new StringLit("Error: one of the later argument items  in regular function was null. ");
+						if (evalItem_more != null)
+							fringe_cons.setCdr (new Cons (evalItem_more, added_fringe_con));
+						else {
 
+							Console.WriteLine ("Error: one of the later argument items  in regular function was null. ");
+							return Nil.getInstance ();
+						}
 
 						fringe_cons = (Cons) fringe_cons.getCdr();
 
@@ -364,12 +394,13 @@ namespace Tree
 						// check if additional eval items are not null
 						Node evalItem_more = args_given.getCar().eval(envExtend2);
 						
-						if( evalItem_more != null)
-							fringe_cons.setCdr(new Cons (evalItem_more, Nil.getInstance() ));
+						if (evalItem_more != null)
+							fringe_cons.setCdr (new Cons (evalItem_more, Nil.getInstance ()));
+						else {
 
-						else
-							return new StringLit("Error: one of the later argument items  in regular function was null. ");
-								
+							Console.WriteLine ("Error: one of the later argument items  in regular function was null. ");
+							return Nil.getInstance ();
+						}	
 
 						hasMoreDescendents = false;
 
