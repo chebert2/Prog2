@@ -90,7 +90,19 @@ namespace Tree
 
 					return Nil.getInstance();
 				}
+else if (this.symbol.getName().equals("set-car!")) {
 
+			arg1.setCar(arg2);
+
+			return arg1;
+
+		} else if (this.symbol.getName().equals("set-cdr!")) {
+
+			arg1.setCdr(arg2);
+
+			return arg1;
+
+		} 
 			else if(this.symbol.getName().Equals("display")) {
 
 					if(args == null  || args.isNull() ) {
