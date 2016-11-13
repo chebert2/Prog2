@@ -909,7 +909,7 @@ namespace Tree
 					}
 
 					// check if args first item given is a pair
-					if (args.getCar() != null  && args.getCdr() =! null && args.getCdr().isNull() ) {
+					if (args.getCar() != null  && args.getCdr() != null && args.getCdr().isNull() ) {
 						return args.getCar();
 					}
 					else {
