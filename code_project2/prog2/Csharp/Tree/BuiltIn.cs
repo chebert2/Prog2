@@ -21,6 +21,9 @@ namespace Tree
     {
         private Node symbol;            // the Ident for the built-in function
 
+		// static field for built in Display... : for letting StringLit print know whether to print double quotes.
+		public static bool builtIn_display__do_not_print_double_quotes;
+
         public BuiltIn(Node s)		{ symbol = s; }
 
 		public Node getSymbol()		{ return symbol; }
@@ -52,7 +55,7 @@ namespace Tree
 			// throw error:
 			return new StringLit ("Error: built eval : in is not meant to be used for evaluate in convention.");
 		}
-   
+
 
         // TODO: The method apply() should be defined in class Node
         // to report an error.  It should be overridden only in classes
@@ -60,22 +63,48 @@ namespace Tree
 		public override Node apply (Node args)
         {
 
-		if (this.symbol.getName ().Equals ("read"))
-			return (Node)Scheme4101.parser.parseExp ();
-		
-		 else if(this.symbol.getName().Equals("write"):
-		 {
-		        arg1.print(0);
-			return Console.Write("");
-		 }
+			// note for all built in functions that need arguments...
+			//
+			// the function will never do a test to check whether args is a pair, because
+			// args is always made a pair in special Regular for launching builtin_function apply.
+
+
+			if (this.symbol.getName ().Equals ("read")) {
+
+				if(args == null  ||  !args.isNull() ) {
+					Console.WriteLine("Error: Read only needs no arguments for use.");
+					return Nil.getInstance();
+				}
+				return (Node)Scheme4101.parser.parseExp ();
+
+			}
+
+			else if(this.symbol.getName().Equals("write"):
+				{
+					if(args == null  || args.isNull() ) {
+						Console.WriteLine("Error: incorrect arguments. Nil passed, which cannot be used.");
+						return Nil.getInstance();
+					}
+
+					args.getCar().print(0);
+
+					return Nil.getInstance();
+				}
+
 			else if(this.symbol.getName().Equals("display")) {
-				Tree.BuiltIn.builtIn_display__do_not_print_double_quotes = true;
 
-				args.getCar().print (0);
+					if(args == null  || args.isNull() ) {
+						Console.WriteLine("Error: incorrect arguments. Nil passed, which cannot be used.");
+						return Nil.getInstance();
+					}
 
-				Tree.BuiltIn.builtIn_display__do_not_print_double_quotes = false;
+				   Tree.BuiltIn.builtIn_display__do_not_print_double_quotes = true;
 
-				return Nil.getInstance ();
+				   args.getCar().print (0);
+
+				   Tree.BuiltIn.builtIn_display__do_not_print_double_quotes = false;
+
+				   return Nil.getInstance ();
 			}
 
 			else if (this.symbol.getName ().Equals ("b+")) {
@@ -868,7 +897,29 @@ namespace Tree
 					Console.WriteLine ("Error: null parameter _ or _ more than two arguments for eq?  test is not permissable.");
 					return Nil.getInstance ();
 				}
-			} else {
+			}
+
+				else if (this.symbol.getName ().Equals ("car")) {
+
+					// if there are no arguments, report error
+					if (args == null || args.isNull ()) {
+
+						Console.WriteLine ("Error: no arguments given for binary subtraction operation.");
+						return Nil.getInstance ();
+					}
+
+					// check if args first item given is a pair
+					if (args.getCar() != null  && args.getCdr() =! null && args.getCdr().isNull() ) {
+						return args.getCar();
+					}
+					else {
+						Console.WriteLine ("Error: wrong number of arguments for car, tail is not nil.  or element in arguments is null.");
+						return Nil.getInstance ();
+					}
+						
+				}
+
+				else {
 
 				Console.WriteLine ("Error: builtin is not identifiable.");
 				return Nil.getInstance ();
