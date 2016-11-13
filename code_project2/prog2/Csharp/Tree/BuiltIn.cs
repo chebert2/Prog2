@@ -79,7 +79,7 @@ namespace Tree
 
 			}
 
-			else if(this.symbol.getName().Equals("write"):
+			else if(this.symbol.getName().Equals("write"))
 				{
 					if(args == null  || args.isNull() ) {
 						Console.WriteLine("Error: incorrect arguments. Nil passed, which cannot be used.");
