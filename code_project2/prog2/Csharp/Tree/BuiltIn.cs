@@ -904,19 +904,61 @@ namespace Tree
 					// if there are no arguments, report error
 					if (args == null || args.isNull ()) {
 
-						Console.WriteLine ("Error: no arguments given for binary subtraction operation.");
+						Console.WriteLine ("Error: no arguments given for car operation.");
 						return Nil.getInstance ();
 					}
 
-					// check if args first item given is a pair
+					// check if args first item given is a pair   and check if the number of arguments given is correctly 1
 					if (args.getCar() != null  && args.getCdr() != null && args.getCdr().isNull() ) {
-						return args.getCar();
+
+						if(args.getCar().isPair())
+						{
+							if (args.getCar().getCar() != null)
+								return args.getCar().getCar();
+							else {
+								Console.WriteLine("Error: for car function_ , one of arguments to return is null.");
+								return Nil.getInstance();
+							}
+
+						}
+						else{
+							Console.WriteLine("Error: for car function_ , item given is not a pair.");
+							return Nil.getInstance();
+						}
 					}
 					else {
 						Console.WriteLine ("Error: wrong number of arguments for car, tail is not nil.  or element in arguments is null.");
 						return Nil.getInstance ();
 					}
 						
+				}
+
+				else if (this.symbol.getName().Equals ("cdr")) {  
+				
+					// if there are no arguments, report error
+					if (args == null || args.isNull ()) {
+
+						Console.WriteLine ("Error: no arguments given for cdr operation.");
+						return Nil.getInstance ();
+					}
+
+
+					// check if args first item given is a pair   and check if the number of arguments given is correctly 1
+					if (args.getCar() != null  && args.getCar().isPair()  && args.getCdr() != null && args.getCdr().isNull() ) {
+						// check if argument's cdr is not null
+						if(args.getCar().getCdr() != null)
+							return args.getCar().getCdr();
+						else {
+							Console.WriteLine("Error: for cdr function_ , one of arguments to return is null.");
+							return Nil.getInstance();
+						}
+					}
+					else {
+						Console.WriteLine ("Error: for cdr, item is not pair  or wrong number of arguments for cdr: tail is not nil.  or element in arguments is null.");
+						return Nil.getInstance ();
+					}
+
+
 				}
 
 				else {
