@@ -77,8 +77,10 @@ namespace Tree
 			}
 
 			// special builtIn   eval  case.
+			BuiltIn givenId = null;
+
 			if (firstElem_car.isBuiltIn ()) {
-				BuiltIn givenId = (BuiltIn)firstElem_car;
+				givenId = (BuiltIn)firstElem_car;
 
 
 				// check if built in is eval
@@ -258,6 +260,15 @@ namespace Tree
 
 				}
 
+				// security check for eof-object? builtIn test...
+				if (givenId != null && givenId.getSymbol ().getName ().Equals ("eof-object?")) {
+
+					if (node1.getCdr ().isNull () || !node1.getCdr().isPair() ) {
+						Console.WriteLine ("Error: no argument for eof-object? test.  the BuiltIn function eof-object?  requires one argument to test.");
+						return Nil.getInstance ();
+					}
+				}
+
 
 
 			}
@@ -316,9 +327,20 @@ namespace Tree
 					if (evalItem1 != null)
 						evaluated_argsList__in_progress = new Cons (evalItem1, added_fringe_con);
 					else {
+					
+						// first a detour...
+						//
+						// check for special case of eof-object? builtIn test
 
-						Console.WriteLine ("Error: one of the args items in regular function was null. ");
-						return Nil.getInstance ();
+						if (givenId != null && givenId.getSymbol ().getName ().Equals ("eof-object?")) {
+							Console.WriteLine ("Error: too many args for function eof-object? test. ");
+							return Nil.getInstance ();
+
+						}  // normal case where regular expression argument evaluated to null  is to throw an error 
+						else {
+							Console.WriteLine ("Error: one of the args items in regular function was null. ");
+							return Nil.getInstance ();
+						}
 					}
 				
 					// under the alias of fringe_cons...
@@ -333,12 +355,35 @@ namespace Tree
 
 					// check if eval is not null
 					Node evalItem1 = args_given.getCar ().eval (envExtend1);
-					if (evalItem1 != null)
-						evaluated_argsList__in_progress = new Cons (evalItem1, Nil.getInstance ());
+					if (evalItem1 != null) {
+
+						// first a detour...
+						//
+						// check for special case of eof-object? builtIn test is false
+
+						if (givenId != null && givenId.getSymbol ().getName ().Equals ("eof-object?")) {
+							return BoolLit.getInstance (false);
+
+						}  // normal case where regular expression argument evaluated to null  is to throw an error 
+						else {
+							evaluated_argsList__in_progress = new Cons (evalItem1, Nil.getInstance ());
+						}
+					}
 					else {
 
-						Console.WriteLine ("Error: the sole additional argument item  in regular function was null. ");
-						return Nil.getInstance ();
+
+						// first a detour...
+						//
+						// check for special case of eof-object? builtIn test is true
+
+						if (givenId != null && givenId.getSymbol ().getName ().Equals ("eof-object?")) {
+							return BoolLit.getInstance (true);
+
+						}  // normal case where regular expression argument evaluated to null  is to throw an error 
+						else {
+							Console.WriteLine ("Error: the sole additional argument item  in regular function was null. ");
+							return Nil.getInstance ();
+						}
 					}
 				}
 
